@@ -101,7 +101,7 @@ services:
 
     php-fpm-openemail:
       image: openemail/phpfpm:latest
-      build: ./data/Dockerfiles/phpfpm
+      container_name: phpfpm
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
         - redis-openemail
@@ -135,7 +135,7 @@ services:
         - SMTP_PORT=${SMTP_PORT:-25}
         - API_KEY=${API_KEY:-invalid}
         - API_ALLOW_FROM=${API_ALLOW_FROM:-invalid}
-        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-openemail-dockerized}
+        - COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-openemail}
         - SKIP_SOLR=${SKIP_SOLR:-y}
         - ALLOW_ADMIN_EMAIL_LOGIN=${ALLOW_ADMIN_EMAIL_LOGIN:-n}
       restart: always
@@ -147,8 +147,8 @@ services:
             - phpfpm
 
     sogo-openemail:
-      image: openemail/sogo:1.57
-      build: ./data/Dockerfiles/sogo
+      image: openemail/sogo:latest
+      container_name: sogo
       environment:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
@@ -176,8 +176,8 @@ services:
             - sogo
 
     dovecot-openemail:
-      image: openemail/dovecot:1.84
-      build: ./data/Dockerfiles/dovecot
+      image: openemail/dovecot:latest
+      container_name: dovecot
       cap_add:
         - NET_BIND_SERVICE
       volumes:
@@ -228,8 +228,8 @@ services:
             - dovecot
 
     postfix-openemail:
-      image: openemail/postfix:1.35
-      build: ./data/Dockerfiles/postfix
+      image: openemail/postfix:latest
+      container_name: postfix
       volumes:
         - ./data/conf/postfix:/opt/postfix/conf
         - ./data/assets/ssl:/etc/ssl/mail/:ro
@@ -260,6 +260,7 @@ services:
 
     memcached-openemail:
       image: memcached:alpine
+      container_name: memcached
       restart: always
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
@@ -274,7 +275,8 @@ services:
         - php-fpm-openemail
         - redis-openemail
       image: nginx:mainline-alpine
-      command: bash ./nginx-envsubst.sh
+      container_name: nginx
+      command: ./nginx-envsubst.sh
       environment:
         - HTTPS_PORT=${HTTPS_PORT:-443}
         - HTTP_PORT=${HTTP_PORT:-80}
@@ -303,8 +305,8 @@ services:
     acme-openemail:
       depends_on:
         - nginx-openemail
-      image: openemail/acme:1.60
-      build: ./data/Dockerfiles/acme
+      image: openemail/acme:latest
+      container_name: acme
       dns:
         - ${IPV4_NETWORK:-172.22.1}.254
       environment:
@@ -332,8 +334,8 @@ services:
             - acme
 
     netfilter-openemail:
-      image: openemail/netfilter:1.28
-      build: ./data/Dockerfiles/netfilter
+      image: openemail/netfilter:latest
+      container_name: netfilter
       stop_grace_period: 30s
       depends_on:
         - dovecot-openemail
@@ -356,10 +358,8 @@ services:
         - /lib/modules:/lib/modules:ro
 
     watchdog-openemail:
-      image: openemail/watchdog:1.53
-      # Debug
-      #command: /watchdog.sh
-      build: ./data/Dockerfiles/watchdog
+      image: openemail/watchdog:latest
+      container_name: watchdog
       volumes:
         - rspamd-vol-1:/var/lib/rspamd
         - mysql-socket-vol-1:/var/run/mysqld/
@@ -389,9 +389,9 @@ services:
             - watchdog
 
     dockerapi-openemail:
-      image: openemail/dockerapi:1.32
+      image: openemail/dockerapi:latest
       restart: always
-      build: ./data/Dockerfiles/dockerapi
+      container_name: dockerapi
       oom_kill_disable: true
       environment:
         - DBROOT=${DBROOT}
@@ -404,8 +404,8 @@ services:
             - dockerapi
 
     solr-openemail:
-      image: openemail/solr:1.6
-      build: ./data/Dockerfiles/solr
+      image: openemail/solr:latest
+      container_name: solr
       restart: always
       volumes:
         - solr-vol-1:/opt/solr/server/solr/dovecot-fts/data
@@ -421,9 +421,9 @@ services:
             - solr
 
     olefy-openemail:
-      image: openemail/olefy:1.1
+      image: openemail/olefy:latest
       restart: always
-      build: ./data/Dockerfiles/olefy
+      container_name: olefy
       environment:
         - OLEFY_BINDADDRESS=0.0.0.0
         - OLEFY_BINDPORT=10055
@@ -457,6 +457,7 @@ services:
         - dockerapi-openemail
         - solr-openemail
       image: robbertkl/ipv6nat
+      container_name: ipv6nat
       restart: always
       privileged: true
       network_mode: "host"
