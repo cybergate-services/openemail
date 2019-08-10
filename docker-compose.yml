@@ -2,8 +2,8 @@ version: '2.1'
 services:
 
     unbound-openemail:
-      image: openemail/unbound:1.8
-      build: ./data/Dockerfiles/unbound
+      image: openemail/unbound:latest
+      container_name: unbound
       command: /usr/sbin/unbound
       environment:
         - TZ=${TZ}
@@ -19,6 +19,7 @@ services:
 
     mysql-openemail:
       image: mariadb:10.2
+      container_name: mysql
       volumes:
         - mysql-vol-1:/var/lib/mysql/
         - mysql-socket-vol-1:/var/run/mysqld/
@@ -41,6 +42,7 @@ services:
 
     redis-openemail:
       image: redis:5-alpine
+      container_name: redis
       volumes:
         - redis-vol-1:/data/
       restart: always
@@ -55,8 +57,8 @@ services:
             - redis
 
     clamd-openemail:
-      image: openemail/clamd:1.26
-      build: ./data/Dockerfiles/clamd
+      image: openemail/clamd:latest
+      container_name: clamd
       restart: always
       environment:
         - TZ=${TZ}
@@ -71,8 +73,8 @@ services:
             - clamd
 
     rspamd-openemail:
-      image: openemail/rspamd:1.45
-      build: ./data/Dockerfiles/rspamd
+      image: openemail/rspamd:latest
+      container_name: rspamd
       stop_grace_period: 30s
       depends_on:
         - nginx-openemail
@@ -98,7 +100,7 @@ services:
             - rspamd
 
     php-fpm-openemail:
-      image: openemail/phpfpm:1.43
+      image: openemail/phpfpm:latest
       build: ./data/Dockerfiles/phpfpm
       command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
       depends_on:
