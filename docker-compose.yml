@@ -1,6 +1,21 @@
 version: '2.1'
 services:
-
+    heimdall-openemail:
+      image: linuxserver/heimdall
+      container_name: heimdall
+      hostname: heimdall
+      environment:
+        - PUID=1001
+        - PGID=1001
+        - TZ=${TZ}
+      volumes:
+        - ./config/heimdall:/config
+      restart: always
+      networks:
+      openemail-network:
+        aliases:
+          - heimdall
+          
     unbound-openemail:
       image: openemail/unbound:latest
       container_name: unbound
@@ -16,9 +31,9 @@ services:
           ipv4_address: ${IPV4_NETWORK:-172.22.1}.254
           aliases:
             - unbound
-
+    
     mysql-openemail:
-      image: mariadb:10.2
+      image: openemail/mariadb:latest
       container_name: mysql
       volumes:
         - mysql-vol-1:/var/lib/mysql/
@@ -26,21 +41,34 @@ services:
         - ./data/conf/mysql/:/etc/mysql/conf.d/:ro
       environment:
         - TZ=${TZ}
-        - MYSQL_ROOT_PASSWORD=${DBROOT}
-        - MYSQL_DATABASE=${DBNAME}
-        - MYSQL_USER=${DBUSER}
-        - MYSQL_PASSWORD=${DBPASS}
-      restart: always
-      dns:
-        - ${IPV4_NETWORK:-172.22.1}.254
-      ports:
-        - "${SQL_PORT:-127.0.0.1:13306}:3306"
-      networks:
-        openemail-network:
-          aliases:
-            - mysql
-
-    redis-openemail:
+        - MARIADB_ROOT_USER=root
+        - MARIADB_ROOT_PASSWORD=${DBROOT}
+        - MARIADB_ROOT_ALLOWED_NETWORKS: 
+            - localhost
+            - 127.0.0.1
+            - ::1
+            - ${IPV4_NETWORK:-172.22.1}.0/24
+            - ${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
+         - MARIADB_DATABASES:
+             - ${DBNAME}:
+                 - ${DBUSER}:${DBPASS}
+             - nextcloud:
+                 - ${DBUSER}:${DBPASS}     
+             - rainloop:
+                 - ${DBUSER}:${DBPASS}
+             - roundcube:
+                 - ${DBUSER}:${DBPASS}
+          restart: always
+          dns:
+            - ${IPV4_NETWORK:-172.22.1}.254
+          ports:
+            - "${SQL_PORT:-127.0.0.1:13306}:3306"
+          networks:
+          openemail-network:
+            aliases:
+              - mysql
+ 
+   redis-openemail:
       image: redis:5-alpine
       container_name: redis
       volumes:
