@@ -330,6 +330,7 @@ services:
   postfix-openemail:
     image: openemail/postfix:latest
     container_name: postfix
+    hostname: postfix
     volumes:
       - ./data/conf/postfix:/opt/postfix/conf
       - ./data/assets/ssl:/etc/ssl/mail/:ro
