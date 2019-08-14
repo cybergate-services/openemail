@@ -154,6 +154,7 @@ services:
       openemail-network:
         aliases:
          - redis
+         - redis-mailcow
 
   clamd-openemail:
     image: openemail/clamd:latest
