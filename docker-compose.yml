@@ -90,7 +90,7 @@ services:
     volumes:
       - ./data/roundcube/config/:/var/roundcube/config/
     depends_on:
-      - mysql
+      - mysql-openemail
     restart: always
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
@@ -112,7 +112,7 @@ services:
     volumes:
      - ./data/rainloop:/rainloop/data
     depends_on:
-     - mysql
+     - mysql-openemail
     dns:
      - ${IPV4_NETWORK:-172.22.1}.254
     networks:
