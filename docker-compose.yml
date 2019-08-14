@@ -132,7 +132,7 @@ services:
      - ./data/nextcloud/data:/data
    restart: always
    depends_on:
-     - mysql
+     - mysql-openemail
    dns:
      - ${IPV4_NETWORK:-172.22.1}.254
    networks:
