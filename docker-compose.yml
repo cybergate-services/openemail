@@ -199,7 +199,7 @@ services:
           - rspamd
 
   php-fpm-openemail:
-    image: openemail/phpfpm:latest
+    image: openemail/php-fpm:latest
     container_name: phpfpm
     command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
     depends_on:
