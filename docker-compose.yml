@@ -43,9 +43,10 @@ services:
       - TZ=${TZ}
       - MARIADB_ROOT_USER=root
       - MARIADB_ROOT_PASSWORD=${DBROOT}
-      - MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['localhost','127.0.0.1','::1']"
+      - MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.22.1.%','localhost','127.0.0.1','::1']"
+      - MARIADB_SSL=false
       - MARIADB_DATABASES:
-          - ${DBNAME}:
+          - openemail:
               - ${DBUSER}:${DBPASS}
           - nextcloud:
               - ${DBUSER}:${DBPASS}
