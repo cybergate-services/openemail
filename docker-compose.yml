@@ -137,6 +137,9 @@ services:
      - mysql-openemail
    dns:
      - ${IPV4_NETWORK:-172.22.1}.254
+   ports:
+     - "1080:80"
+     - "10443:443"
    networks:
      openemail-network:
        aliases:
