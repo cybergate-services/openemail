@@ -41,11 +41,10 @@ services:
       - ./data/conf/mysql/:/etc/mysql/conf.d/:ro
     environment:
       - TZ=${TZ}
-      - MARIADB_ROOT_USER=root
-      - MARIADB_ROOT_PASSWORD=${DBROOT}
-      - MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.22.1.%','localhost','127.0.0.1','::1']"
-      - MARIADB_SSL=false
-      - MARIADB_DATABASES="#PYTHON2BASH:[{'openemail': [{'openemail': 'password'}]},'rainloop','nextcloud','roundcube']"
+      - MYSQL_ROOT_PASSWORD=${DBROOT}
+      - MYSQL_DATABASE=openemail,nextcloud,rainloop,roundcube
+      - MYSQL_USER=${DBUSER}
+      - MYSQL_PASSWORD=${DBPASS}
     restart: always
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
