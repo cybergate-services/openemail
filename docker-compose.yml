@@ -43,12 +43,7 @@ services:
       - TZ=${TZ}
       - MARIADB_ROOT_USER=root
       - MARIADB_ROOT_PASSWORD=${DBROOT}
-      - MARIADB_ROOT_ALLOWED_NETWORKS:
-          - localhost
-          - 127.0.0.1
-          - ::1
-          - ${IPV4_NETWORK:-172.22.1}.0/24
-          - ${IPV6_NETWORK:-fd4d:6169:6c63:6f77::/64}
+      - MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['localhost','127.0.0.1','::1']"
       - MARIADB_DATABASES:
           - ${DBNAME}:
               - ${DBUSER}:${DBPASS}
@@ -328,8 +323,8 @@ services:
     ulimits:
       nproc: 65535
       nofile:
-      soft: 20000
-      hard: 40000
+        soft: 20000
+        hard: 40000
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     hostname: ${OPENEMAIL_HOSTNAME}
