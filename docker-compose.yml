@@ -47,13 +47,13 @@ services:
       - MARIADB_SSL=false
       - MARIADB_DATABASES:
           - openemail:
-              - ${DBUSER} : ${DBPASS}
+              - openemail: ${DBPASS}
           - nextcloud:
-              - ${DBUSER} : ${DBPASS}
+              - openemail: ${DBPASS}
           - rainloop:
-              - ${DBUSER} : ${DBPASS}
+              - openemail: ${DBPASS}
           - roundcube:
-              - ${DBUSER} : ${DBPASS}
+              - openemail: ${DBPASS}
     restart: always
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
