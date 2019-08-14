@@ -103,7 +103,7 @@ services:
     image: openemail/rainloop:latest
     container_name: rainloop
     links:
-      - mysql:mysql-openemail
+      - mysql-openemail
     environment:
       - TZ=${TZ}
       - UPLOAD_MAX_SIZE=25M
