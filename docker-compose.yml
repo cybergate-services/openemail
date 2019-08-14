@@ -92,6 +92,8 @@ services:
     depends_on:
       - mysql-openemail
     restart: always
+    ports:
+      - "1080:80"
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
