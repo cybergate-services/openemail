@@ -88,7 +88,7 @@ services:
       - ROUNDCUBEMAIL_DB_PASSWORD=${DBPASS}
       - ROUNDCUBEMAIL_DB_NAME=roundcube
     volumes:
-      ./data/roundcube/config/:/var/roundcube/config/
+      - ./data/roundcube/config/:/var/roundcube/config/
     depends_on:
       - mysql
     restart: always
