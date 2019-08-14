@@ -92,8 +92,6 @@ services:
     depends_on:
       - mysql-openemail
     restart: always
-    ports:
-      - "1080:80"
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
@@ -137,9 +135,6 @@ services:
      - mysql-openemail
    dns:
      - ${IPV4_NETWORK:-172.22.1}.254
-   ports:
-     - "1080:80"
-     - "10443:443"
    networks:
      openemail-network:
        aliases:
@@ -380,7 +375,7 @@ services:
       - redis-openemail
     image: nginx:mainline-alpine
     container_name: nginx
-    command: ./nginx-envsubst.sh
+    command: /opt/openemail/nginx-envsubst.sh
     environment:
       - HTTPS_PORT=${HTTPS_PORT:-443}
       - HTTP_PORT=${HTTP_PORT:-80}
