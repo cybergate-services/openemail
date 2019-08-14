@@ -45,7 +45,7 @@ services:
       - MARIADB_ROOT_PASSWORD=${DBROOT}
       - MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.22.1.%','localhost','127.0.0.1','::1']"
       - MARIADB_SSL=false
-      - MARIADB_DATABASES="#PYTHON2BASH:['openemail': ['openemail': '${DBPASS}']],'nextcloud','rainloop','roundcube']"
+      - MARIADB_DATABASES="#PYTHON2BASH:[{'openemail': ['openemail': '${DBPASS}']]},'nextcloud','rainloop','roundcube']"
     restart: always
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
