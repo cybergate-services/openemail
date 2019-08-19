@@ -366,7 +366,7 @@ services:
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
-      Sopenemail-network:
+      openemail-network:
         aliases:
           - memcached
 
