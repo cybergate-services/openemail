@@ -154,7 +154,6 @@ services:
       openemail-network:
         aliases:
          - redis
-         - redis-mailcow
 
   clamd-openemail:
     image: openemail/clamd:latest
@@ -188,7 +187,7 @@ services:
       - ./data/conf/rspamd/plugins.d/:/etc/rspamd/plugins.d
       - ./data/conf/rspamd/lua/:/etc/rspamd/lua/:ro
       - ./data/conf/rspamd/rspamd.conf.local:/etc/rspamd/rspamd.conf.local
-      - ./data/conf/rspamd/rspamd.conf.override:/etc/rspamd/rspamd.conf.override
+      - ./data/conf/openemail/rspamd.conf.override:/etc/rspamd/rspamd.conf.override
       - rspamd-vol-1:/var/lib/rspamd
     restart: always
     dns:
