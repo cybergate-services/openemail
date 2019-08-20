@@ -19,10 +19,10 @@ read -r -p "Are you sure you want to reset the openemail administrator account? 
 response=${response,,}    # tolower
 if [[ "$response" =~ ^(yes|y)$ ]]; then
 	echo -e "\nWorking, please wait..."
-	docker exec -it $(docker ps -qf name=mysql-openemail) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM admin WHERE username='admin';"
-  docker exec -it $(docker ps -qf name=mysql-openemail) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM domain_admins WHERE username='admin';"
-	docker exec -it $(docker ps -qf name=mysql-openemail) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '{SSHA256}4BrbE0bJqOcY//mYmqSbHCPjx+GyAYZ1NCnr50lFtl1lZDJmMDdiMGQ5NDkxMmRh', 1, 1);"
-	docker exec -it $(docker ps -qf name=mysql-openemail) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM tfa WHERE username='admin';"
+	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM admin WHERE username='admin';"
+  docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM domain_admins WHERE username='admin';"
+	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '{SSHA256}4BrbE0bJqOcY//mYmqSbHCPjx+GyAYZ1NCnr50lFtl1lZDJmMDdiMGQ5NDkxMmRh', 1, 1);"
+	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM tfa WHERE username='admin';"
 	echo "
 Reset credentials:
 ---
