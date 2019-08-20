@@ -24,7 +24,7 @@ $_SESSION['return_to'] = $_SERVER['REQUEST_URI'];
       <div class="panel panel-default">
         <div class="panel-heading"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <?= $lang['login']['login']; ?></div>
         <div class="panel-body">
-          <div class="text-center openemail-logo"><img src="<?=($main_logo = customize('get', 'main_logo')) ? $main_logo : '/img/cow_openemail.svg';?>" alt="openemail"></div>
+          <div class="text-center openemail-logo"><img src="<?=($main_logo = customize('get', 'main_logo')) ? $main_logo : '/img/openemail-logo.png';?>" alt="openemail"></div>
           <legend><?=$UI_TEXTS['main_name'];?></legend>
             <form method="post" autofill="off">
             <div class="form-group">
