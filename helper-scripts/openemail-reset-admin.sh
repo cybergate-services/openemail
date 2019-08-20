@@ -10,7 +10,7 @@ fi
 echo -n "Checking MySQL service... "
 if [[ -z $(docker ps -qf name=mysql) ]]; then
 	echo "failed"
-	echo "MySQL (mysql-openemail) is not up and running, exiting..."
+	echo "MySQL (mysql) is not up and running, exiting..."
 	exit 1
 fi
 
@@ -22,7 +22,7 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
 	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM admin WHERE username='admin';"
   docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM domain_admins WHERE username='admin';"
 	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO admin (username, password, superadmin, active) VALUES ('admin', '{SSHA256}4BrbE0bJqOcY//mYmqSbHCPjx+GyAYZ1NCnr50lFtl1lZDJmMDdiMGQ5NDkxMmRh', 1, 1);"
-	docker exec -it $(docker ps -qf namechinthakadeshapriya=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM tfa WHERE username='admin';"
+	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "DELETE FROM tfa WHERE username='admin';"
 	echo "
 Reset credentials:
 ---
