@@ -567,7 +567,7 @@ services:
       - watchdog-openemail
       - dockerapi-openemail
       - solr-openemail
-    image: robbertkl/ipv6nat
+    image: openemail/ipv6nat:latest
     container_name: ipv6nat
     restart: always
     privileged: true
