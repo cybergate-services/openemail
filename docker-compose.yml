@@ -58,7 +58,7 @@ services:
   phpmyadmin-openemail:
     image: openemail/phpmyadmin:latest
     container_name: phpmyadmin
-    hostname: phpmyadmin
+    hostname: ${OPENEMAIL_HOSTNAME}
     restart: always
     environment:
       - TZ=${TZ}
