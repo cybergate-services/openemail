@@ -1,0 +1,3 @@
+location /phpmyadmin/ {
+        proxy_pass http://phpmyadmin/;
+}
