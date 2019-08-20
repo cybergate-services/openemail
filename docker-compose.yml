@@ -374,7 +374,7 @@ services:
       - sogo-openemail
       - php-fpm-openemail
       - redis-openemail
-    image: nginx:mainline-alpine
+    image: openemail/nginx:latest
     container_name: nginx
     command: /bin/sh -c "envsubst < /etc/nginx/conf.d/templates/listen_plain.template > /etc/nginx/conf.d/listen_plain.active &&
       envsubst < /etc/nginx/conf.d/templates/listen_ssl.template > /etc/nginx/conf.d/listen_ssl.active &&
