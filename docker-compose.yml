@@ -63,7 +63,10 @@ services:
     environment:
       - TZ=${TZ}
       - PHPMYADMIN_HTTPS=false
+      - PHPMYADMIN_TRUST_PROXY_SSL=true
       - PHPMYADMIN_DB_HOSTS=mysql
+      - PHPMYADMIN_CONFIG_DB_USER=${DBUSER}
+      - PHPMYADMIN_CONFIG_DB_PASSWORD=&{DBPASS}
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
