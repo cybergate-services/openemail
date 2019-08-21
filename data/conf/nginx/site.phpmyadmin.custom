@@ -1,4 +1,4 @@
-location /pma {
-    proxy_pass http://phpmyadmin/;                                 
+location /pma/ {
+    proxy_pass http://phpmyadmin/;
     proxy_buffering off;
 }
