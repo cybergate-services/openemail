@@ -1,13 +1,3 @@
-
-# Redirects for DAV clients
-location = /.well-known/carddav {
-    return 301 $scheme://$host/nextcloud/remote.php/dav;
-}
-
-location = /.well-known/caldav {
-    return 301 $scheme://$host/nextcloud/remote.php/dav;
-}
-
 location /nextcloud {
     return 301 $scheme://$host/nextcloud/;
 }
