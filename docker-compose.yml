@@ -169,7 +169,7 @@ services:
       - TZ=${TZ}
       - SKIP_CLAMD=${SKIP_CLAMD:-n}
     volumes:
-      - ./datahttps://mail.softlineglobal.com:10443//conf/clamav/:/etc/clamav/
+      - ./data/conf/clamav/:/etc/clamav/
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
