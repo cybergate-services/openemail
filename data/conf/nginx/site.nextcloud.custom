@@ -1,17 +1,29 @@
+
+# Redirects for DAV clients
+location = /.well-known/carddav {
+    return 301 $scheme://$host/nextcloud/remote.php/dav;
+}
+
+location = /.well-known/caldav {
+    return 301 $scheme://$host/nextcloud/remote.php/dav;
+}
+
 location /nextcloud {
     return 301 $scheme://$host/nextcloud/;
 }
+
 location ^~ /nextcloud/ {
-    # enable the next two lines for http auth
-    #auth_basic "Restricted";
-    #auth_basic_user_file /etc/nginx/.htpasswd;
-
-    # enable the next two lines for ldap auth, also customize and enable ldap.conf in the default conf
-    #auth_request /auth;
-    #error_page 401 =200 /login;
-
+    include /config/nginx/proxy.conf;
     resolver 127.0.0.11 valid=30s;
     set $upstream_nextcloud nextcloud;
     rewrite /nextcloud(.*) $1 break;
-    proxy_pass http://$upstream_nextcloud:80;
-}
+    proxy_pass https://$upstream_nextcloud:443;
+
+    proxy_max_temp_file_size 2048m;
+
+    proxy_set_header Range $http_range;
+    proxy_set_header If-Range $http_if_range;
+    proxy_set_header Connection $http_connection;
+    proxy_redirect off;
+    proxy_ssl_session_reuse off;
+} 
