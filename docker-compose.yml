@@ -107,7 +107,7 @@ services:
     links:
       - mysql-openemail
     environment:
-      - TZ=${TZ}https://mail.softlineglobal.com:10443/
+      - TZ=${TZ}
       - UPLOAD_MAX_SIZE=25M
       - LOG_TO_STDOUT=true
       - MEMORY_LIMIT=128M
