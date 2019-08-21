@@ -130,13 +130,11 @@ services:
      - PUID=1001
      - PGID=1001
      - TZ=${TZ}key
-   ports:
-      - 8011:80
    volumes:
      # - ./data/nextcloud/config:/config
      - ./data/conf/nextcloud/config.php:/config/www/nextcloud/config/config.php
      - ./data/assets/ssl/cert.pem:/config/keys/cert.crt
-     - ./data/assets/ssl/key.pem:/config/keys/cert.key  
+     - ./data/assets/ssl/key.pem:/config/keys/cert.key
      - ./data/nextcloud/data:/data
    restart: always
    depends_on:
