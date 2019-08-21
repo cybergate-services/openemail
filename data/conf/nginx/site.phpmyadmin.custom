@@ -1,4 +1,4 @@
 location /pma {
-    proxy_pass http://localhost:8010/;                                 
+    proxy_pass http://phpmyadmin/;                                 
     proxy_buffering off;
 }
