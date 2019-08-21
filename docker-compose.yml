@@ -107,7 +107,7 @@ services:
     links:
       - mysql-openemail
     environment:
-      - TZ=${TZ}
+      - TZ=${TZ}https://mail.softlineglobal.com:10443/
       - UPLOAD_MAX_SIZE=25M
       - LOG_TO_STDOUT=true
       - MEMORY_LIMIT=128M
@@ -129,12 +129,14 @@ services:
    environment:
      - PUID=1001
      - PGID=1001
-     - TZ=${TZ}
+     - TZ=${TZ}key
    ports:
-      - 10443:443
+      - 8011:80
    volumes:
      # - ./data/nextcloud/config:/config
      - ./data/conf/nextcloud/config.php:/config/www/nextcloud/config/config.php
+     - ./data/assets/ssl/cert.pem:/config/keys/cert.crt
+     - ./data/assets/ssl/key.pem:/config/keys/cert.key  
      - ./data/nextcloud/data:/data
    restart: always
    depends_on:
@@ -169,7 +171,7 @@ services:
       - TZ=${TZ}
       - SKIP_CLAMD=${SKIP_CLAMD:-n}
     volumes:
-      - ./data/conf/clamav/:/etc/clamav/
+      - ./datahttps://mail.softlineglobal.com:10443//conf/clamav/:/etc/clamav/
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
     networks:
