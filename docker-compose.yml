@@ -129,9 +129,6 @@ services:
    environment:
      - PUID=1001
      - PGID=1001
-     - TZ=${TZ}key
-   ports:
-     - 10443:443
    volumes:
      # - ./data/nextcloud/config:/config
      - ./data/conf/nextcloud/config.php:/config/www/nextcloud/config/config.php
