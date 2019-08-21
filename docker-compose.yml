@@ -130,7 +130,8 @@ services:
      - PGID=1001
      - TZ=${TZ}
    volumes:
-     - ./data/nextcloud/config:/config
+     # - ./data/nextcloud/config:/config
+     - ./data/conf/nextcloud/config.php:/config/www/nextcloud/config/config.php 
      - ./data/nextcloud/data:/data
    restart: always
    depends_on:
