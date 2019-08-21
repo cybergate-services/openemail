@@ -64,7 +64,7 @@ services:
       - TZ=${TZ}
       - PMA_HOST=mysql
       - PMA_ARBITRARY=1
-      - PMA_ABSOLUTE_URI=http://${OPENEMAIL_HOSTNAME}/pma/
+      - PMA_ABSOLUTE_URI=http://${OPENEMAIL_HOSTNAME}
     ports:
       - 8010:80
     dns:
