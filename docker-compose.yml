@@ -75,6 +75,7 @@ services:
   roundcube-openemail:
     image: openemail/roundcube:latest
     container_name: roundcube
+    hostname: ${OPENEMAIL_HOSTNAME}
     environment:
       - TZ=${TZ}
       - ROUNDCUBEMAIL_DEFAULT_HOST=dovecot
