@@ -42,7 +42,7 @@ services:
     environment:
       - TZ=${TZ}
       - MYSQL_ROOT_PASSWORD=${DBROOT}
-      - MYSQL_DATABASE=openemail,nextcloud,rainloop,roundcube
+      - MYSQL_DATABASE=${DBNAME},${NCDBNAME},${RLDBNAME},${RCDBNAME}
       - MYSQL_USER=${DBUSER}
       - MYSQL_PASSWORD=${DBPASS}
     restart: always
@@ -58,7 +58,7 @@ services:
   phpmyadmin-openemail:
     image: openemail/phpmyadmin:latest
     container_name: phpmyadmin
-    hostname: ${OPENEMAIL_HOSTNAME}
+    hostname: pma.${OPENEMAIL_DOMAIN}
     restart: always
     environment:
       - TZ=${TZ}
@@ -102,6 +102,7 @@ services:
   rainloop-openemail:
     image: openemail/rainloop:latest
     container_name: rainloop
+    hostname: rl.${OPENEMAIL_DOMAIN}
     links:
       - mysql-openemail
     environment:
@@ -123,7 +124,7 @@ services:
   nextcloud-openemail:
    image: openemail/nextcloud:latest
    container_name: nextcloud
-   hostname: ${OPENEMAIL_HOSTNAME}
+   hostname: nc.${OPENEMAIL_DOMAIN}
    environment:
      - PUID=1001
      - PGID=1001
