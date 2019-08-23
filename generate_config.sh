@@ -88,6 +88,8 @@ else
   SKIP_SOLR=n
 fi
 
+OPENEMAIL_DOMAIN=$(echo ${OPENEMAIL_HOSTNAME} | cut -f 1 -d . --complement)
+
 [ ! -f ./data/conf/rspamd/override.d/worker-controller-password.inc ] && echo '# Placeholder' > ./data/conf/rspamd/override.d/worker-controller-password.inc
 
 cat << EOF > openemail.conf
