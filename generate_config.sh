@@ -173,7 +173,7 @@ MAILDIR_GC_TIME=1440
 #
 # You can use wildcard records to create specific names for every domain you add to openemail.
 # Example: Add domains "example.com" and "example.net" to openemail, change ADDITIONAL_SAN to a value like:
-#ADDITIONAL_SAN=imap.*,smtp.*
+# ADDITIONAL_SAN=imap.*,smtp.*,nc.*,lp.*,pma.*,rc.*
 # This will expand the certificate to "imap.example.com", "smtp.example.com", "imap.example.net", "imap.example.net"
 # plus every domain you add in the future.
 #
@@ -212,7 +212,7 @@ SOLR_HEAP=1024
 
 # Enable watchdog (watchdog-openemail) to restart unhealthy containers (experimental)
 
-USE_WATCHDOG=n
+USE_WATCHDOG=y
 
 # Allow admins to log into SOGo as email user (without any password)
 
@@ -222,7 +222,7 @@ ALLOW_ADMIN_EMAIL_LOGIN=n
 # Can by multiple rcpts, NO quotation marks
 
 #WATCHDOG_NOTIFY_EMAIL=a@example.com,b@example.com,c@example.com
-#WATCHDOG_NOTIFY_EMAIL=
+WATCHDOG_NOTIFY_EMAIL=watchdog@${OPENEMAIL_DOMAIN}
 
 # Notify about banned IP (includes whois lookup)
 WATCHDOG_NOTIFY_BAN=y
