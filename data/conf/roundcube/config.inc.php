@@ -18,7 +18,7 @@ $config['log_dir'] = '/dev/null';
 $config['temp_dir'] = '/tmp';
 $config['plugins'] = array(
   'archive',
-  'managesieve'
+  'managesieve',
   'password'
 );
 $config['skin'] = 'larry';
