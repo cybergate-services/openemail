@@ -6,5 +6,5 @@ location ^~ /rainloop/ {
     resolver 127.0.0.11 valid=30s;
     set $upstream_rainloop rainloop;
     rewrite /rainloop(.*) $1 break;
-    proxy_pass http://$upstream_rainloop:80;
+    proxy_pass http://$upstream_rainloop:8888;
 }
