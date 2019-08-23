@@ -4,7 +4,7 @@ if (!file_exists('/tmp/mime.types')) {
 file_put_contents("/tmp/mime.types", fopen("http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/conf/mime.types", 'r'));
 }
 $config = array();
-$config['db_dsnw'] = 'mysql://' . getenv('DBUSER') . ':' . getenv('DBPASS') . '@mysql/' . getenv('DBNAME');
+$config['db_dsnw'] = 'mysql://' . getenv('DBUSER') . ':' . getenv('DBPASS') . '@mysql/' . getenv('RCDBNAME');
 $config['default_host'] = 'tls://dovecot';
 $config['default_port'] = '143';
 $config['smtp_server'] = 'tls://postfix';
@@ -19,6 +19,7 @@ $config['temp_dir'] = '/tmp';
 $config['plugins'] = array(
   'archive',
   'managesieve'
+  'password'
 );
 $config['skin'] = 'larry';
 $config['mime_types'] = '/tmp/mime.types';
