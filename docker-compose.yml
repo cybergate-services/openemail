@@ -78,10 +78,10 @@ services:
     hostname: ${OPENEMAIL_HOSTNAME}
     environment:
       - TZ=${TZ}
-      - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.softlineglobal.com
-      - ROUNDCUBEMAIL_DEFAULT_PORT=993
-      - ROUNDCUBEMAIL_SMTP_SERVER=tls://postfix
-      - ROUNDCUBEMAIL_SMTP_PORT=587
+      - ROUNDCUBEMAIL_DEFAULT_HOST=dovecot
+      - ROUNDCUBEMAIL_DEFAULT_PORT=143
+      - ROUNDCUBEMAIL_SMTP_SERVER=postfix
+      - ROUNDCUBEMAIL_SMTP_PORT=588
       - ROUNDCUBEMAIL_PLUGINS=archive,zipdownload
       - ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE=25M
       - ROUNDCUBEMAIL_DB_TYPE=mysql
