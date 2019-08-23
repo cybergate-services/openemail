@@ -101,6 +101,7 @@ cat << EOF > openemail.conf
 # Default password is "moohoo"
 
 OPENEMAIL_HOSTNAME=${OPENEMAIL_HOSTNAME}
+OPENEMAIL_DOMAIN=${OPENEMAIL_DOMAIN}
 
 # ------------------------------
 # SQL database configuration
@@ -153,7 +154,7 @@ TZ=${OPENEMAIL_TZ}
 
 # Fixed project name
 
-COMPOSE_PROJECT_NAME=openemaildockerized
+COMPOSE_PROJECT_NAME=openemail
 
 # Set this to "allow" to enable the anyone pseudo user. Disabled by default.
 # When enabled, ACL can be created, that apply to "All authenticated users"
