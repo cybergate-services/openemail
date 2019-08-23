@@ -105,6 +105,9 @@ OPENEMAIL_HOSTNAME=${OPENEMAIL_HOSTNAME}
 # ------------------------------
 
 DBNAME=openemail
+RCDBNAME=roundcube
+RLDBNAME=rainloop
+NCDBNAME=nextcloud
 DBUSER=openemail
 
 # Please use long, random alphanumeric strings (A-Za-z0-9)
