@@ -79,7 +79,7 @@ services:
     environment:
       - TZ=${TZ}
       - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.softlineglobal.com
-      - ROUNDCUBEMAIL_DEFAULT_PORT=143
+      - ROUNDCUBEMAIL_DEFAULT_PORT=993
       - ROUNDCUBEMAIL_SMTP_SERVER=tls://postfix
       - ROUNDCUBEMAIL_SMTP_PORT=587
       - ROUNDCUBEMAIL_PLUGINS=archive,zipdownload
