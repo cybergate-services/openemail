@@ -128,7 +128,7 @@ services:
   nextcloud-openemail:
    image: nextcloud:fpm
    links:
-     - mysql
+     - mysql-openemail
    container_name: nextcloud
    hostname: nextcloud
    environment:
