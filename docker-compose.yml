@@ -126,28 +126,30 @@ services:
          - rainloop
 
   nextcloud-openemail:
-   image: openemail/nextcloud:latest
+   image: nextcloud:fpm
+   links:
+     - mysql
    container_name: nextcloud
    hostname: nextcloud
    environment:
-     - PUID=1001
-     - PGID=1001
+     - MYSQL_DATABASE=${NCDBNAME}
+     - MYSQL_USER=${DBUSER}
+     - MYSQL_PASSWORD=${DBPASS}
+     - MYSQL_HOST=mysql
+     - NEXTCLOUD_TRUSTED_DOMAINS=${OPENEMAIL_HOSTNAME}
+     - REDIS_HOST=redis
    volumes:
-     # - ./data/nextcloud/config:/config
-     - ./data/conf/nextcloud/config.php:/config/www/nextcloud/config/config.php
-     - ./data/assets/ssl/cert.pem:/config/keys/cert.crt
-     - ./data/assets/ssl/key.pem:/config/keys/cert.key
-     - ./data/nextcloud/data:/data
+     - nextcloud-vol-1:/var/www/html
    restart: always
    depends_on:
      - mysql-openemail
+     - redis-openemail
    dns:
      - ${IPV4_NETWORK:-172.22.1}.254
    networks:
      openemail-network:
        aliases:
          - nextcloud
-
 
   redis-openemail:
     image: openemail/redis:latest
@@ -610,3 +612,4 @@ volumes:
   postfix-vol-1:
   crypt-vol-1:
   sogo-web-vol-1:
+  nextcloud-vol-1:
