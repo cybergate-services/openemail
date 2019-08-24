@@ -126,7 +126,7 @@ services:
          - rainloop
 
   nextcloud-openemail:
-   image: nextcloud:fpm
+   image: nextcloud
    links:
      - mysql-openemail
    container_name: nextcloud
