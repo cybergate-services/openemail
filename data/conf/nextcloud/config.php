@@ -19,7 +19,6 @@ $CONFIG = array (
   'overwrite.cli.url' => 'https://$openemail_hostname/nextcloud',
   'trusted_domains' =>
      array (
-     0 => 'nextcloud',
-     1 => '$openemail_hostname',
+     0 => '$openemail_hostname',
    ),
 );
