@@ -15,5 +15,5 @@ location ^~ /nextcloud/ {
     resolver 127.0.0.11 valid=30s;
     set $upstream_nextcloud nextcloud;
     rewrite /nextcloud(.*) $1 break;
-    proxy_pass https://$upstream_nextcloud:80;
+    proxy_pass http://$upstream_nextcloud:80;
 }
