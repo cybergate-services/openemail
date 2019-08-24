@@ -127,8 +127,8 @@ services:
 
   nextcloud-openemail:
    image: openemail/nextcloud:latest
-   container_name: nc.softlineglobal.com 
-   hostname: ${OPENEMAIL_HOSTNAME}
+   container_name: nextcloud
+   hostname: nextcloud
    environment:
      - PUID=1001
      - PGID=1001
