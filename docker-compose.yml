@@ -126,11 +126,11 @@ services:
          - rainloop
 
   nextcloud-openemail:
-   image: nextcloud
+   image: nextcloud:apache
    links:
      - mysql-openemail
    container_name: nextcloud
-   hostname: nextcloud
+   hostname: ${OPENEMAIL_HOSTNAME}
    environment:
      - MYSQL_DATABASE=${NCDBNAME}
      - MYSQL_USER=${DBUSER}
@@ -150,6 +150,7 @@ services:
      openemail-network:
        aliases:
          - nextcloud
+         - ${OPENEMAIL_HOSTNAME}
 
   redis-openemail:
     image: openemail/redis:latest
