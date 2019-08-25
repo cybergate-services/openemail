@@ -150,11 +150,11 @@ services:
      openemail-network:
        aliases:
          - nextcloud
-    
+
   ncweb-openemail:
     image: nginx
     ports:
-      - 8011:80
+      - 127.0.0.1:8011:80
     links:
       - nextcloud-openemail
     volumes:
