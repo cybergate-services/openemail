@@ -7,4 +7,5 @@ location ^~ /nextcloud/ {
     set $upstream_nextcloud nextcloud;
     rewrite /nextcloud(.*) $1 break;
     proxy_pass http://$upstream_nextcloud;
+    proxy_redirect http://$upstream_nextcloud https://mail.softlineglobal.com/nextcloud
 }
