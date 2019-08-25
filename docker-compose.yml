@@ -140,7 +140,7 @@ services:
      - REDIS_HOST=redis
    volumes:
      - nextcloud-vol-1:/var/www/html
-     - ./data/conf/nextcloud/config.php:/var/www/html/config/config.php
+     - ./data/nextcloud/config:/var/www/html/config
    restart: always
    depends_on:
      - mysql-openemail
