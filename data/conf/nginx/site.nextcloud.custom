@@ -1,11 +1,3 @@
-location /nextcloud {
-    return 301 $scheme://$host/nextcloud/;
-}
-location ^~ /nextcloud/ {
-
-    resolver 127.0.0.11 valid=30s;
-    set $upstream_nextcloud nextcloud;
-    rewrite /nextcloud(.*) $1 break;
-    proxy_pass http://$upstream_nextcloud;
-    proxy_redirect http://$upstream_nextcloud https://mail.softlineglobal.com/nextcloud;
+location /nextcloud/ {
+        proxy_pass http://mail.softlineglobal.com:8011/;
 }
