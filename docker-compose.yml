@@ -129,7 +129,7 @@ services:
    image: nextcloud:apache
    links:
      - mysql-openemail
-   container_name: ${OPENEMAIL_HOSTNAME}
+   container_name: nextcloud
    hostname: nextcloud
    environment:
      - MYSQL_DATABASE=${NCDBNAME}
@@ -140,6 +140,7 @@ services:
      - REDIS_HOST=redis
    volumes:
      - nextcloud-vol-1:/var/www/html
+     - ./data/nextcloud/config/:/var/www/html/config/
    restart: always
    depends_on:
      - mysql-openemail
