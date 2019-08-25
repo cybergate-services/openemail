@@ -126,10 +126,10 @@ services:
          - rainloop
 
   nextcloud-openemail:
-   image: nextcloud:fpm
+   image: nextcloud:apache
    links:
      - mysql-openemail
-   container_name: nextcloud
+   container_name: ${OPENEMAIL_HOSTNAME}
    hostname: nextcloud
    environment:
      - MYSQL_DATABASE=${NCDBNAME}
