@@ -136,7 +136,7 @@ services:
      - MYSQL_USER=${DBUSER}
      - MYSQL_PASSWORD=${DBPASS}
      - MYSQL_HOST=mysql
-     - NEXTCLOUD_TRUSTED_DOMAINS=${OPENEMAIL_HOSTNAME}
+     - NEXTCLOUD_TRUSTED_DOMAINS=mail.softlineglobal.com softlineglobal.com mail.cybergatelabs.com
      - REDIS_HOST=redis
    volumes:
      - nextcloud-vol-1:/var/www/html
