@@ -73,7 +73,7 @@ elif [[ ${NC_UPDATE} == "y" ]]; then
     echo "Cannot upgrade to new major version, please update manually."
     exit 1
   else
-    curl -L# -o nextcloud.tar.bz2 "https://download.nextcloud.com/server/releases/latest-16.tar.bz2" || { echo "Failed to download Nextcloud archive."; exit 1; } \
+    curl -L -o nextcloud.tar.bz2 "https://download.nextcloud.com/server/releases/latest-16.tar.bz2" || { echo "Failed to download Nextcloud archive."; exit 1; } \
       && tar -xjf nextcloud.tar.bz2 -C ./data/web/ \
       && rm nextcloud.tar.bz2 \
       && mkdir -p ./data/web/nextcloud/data \
@@ -94,7 +94,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
 
   ADMIN_NC_PASS=$(</dev/urandom tr -dc A-Za-z0-9 | head -c 28)
 
-  curl -L# -o nextcloud.tar.bz2 "https://download.nextcloud.com/server/releases/latest-15.tar.bz2" || { echo "Failed to download Nextcloud archive."; exit 1; } \
+  curl -L -o nextcloud.tar.bz2 "https://download.nextcloud.com/server/releases/latest-15.tar.bz2" || { echo "Failed to download Nextcloud archive."; exit 1; } \
     && tar -xjf nextcloud.tar.bz2 -C ./data/web/ \
     && rm nextcloud.tar.bz2 \
     && mkdir -p ./data/web/nextcloud/data \
@@ -104,7 +104,7 @@ elif [[ ${NC_INSTALL} == "y" ]]; then
   docker exec -it -u www-data $(docker ps -f name=php-fpm -q) /web/nextcloud/occ --no-warnings maintenance:install \
     --database mysql \
     --database-host mysql \
-    --database-name ${DBNAME} \
+    --database-name ${NCDBNAME} \
     --database-user ${DBUSER} \
     --database-pass ${DBPASS} \
     --database-table-prefix nc_ \
