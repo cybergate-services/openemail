@@ -75,7 +75,7 @@ services:
   roundcube-openemail:
     image: openemail/roundcube:latest
     container_name: roundcube
-    hostname: roundcube
+    hostname: rc.${OPENEMAIL_DOMAIN}
     environment:
       - TZ=${TZ}
       - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.softlineglobal.com
@@ -106,7 +106,7 @@ services:
   rainloop-openemail:
     image: openemail/rainloop:latest
     container_name: rainloop
-    hostname: rainloop
+    hostname: rl.${OPENEMAIL_DOMAIN}
     links:
       - mysql-openemail
     environment:
