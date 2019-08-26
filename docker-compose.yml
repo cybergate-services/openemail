@@ -75,7 +75,7 @@ services:
   roundcube-openemail:
     image: openemail/roundcube:latest
     container_name: roundcube
-    hostname: rc.${OPENEMAIL_DOMAIN}
+    hostname: roundcube
     environment:
       - TZ=${TZ}
       - ROUNDCUBEMAIL_DEFAULT_HOST=tls://mail.softlineglobal.com
@@ -106,7 +106,7 @@ services:
   rainloop-openemail:
     image: openemail/rainloop:latest
     container_name: rainloop
-    hostname: rl.${OPENEMAIL_DOMAIN}
+    hostname: rainloop
     links:
       - mysql-openemail
     environment:
@@ -126,7 +126,7 @@ services:
          - rainloop
 
   nextcloud-openemail:
-   image: nextcloud:fpm
+   image: nextcloud:apache
    links:
      - mysql-openemail
    container_name: nextcloud
@@ -150,22 +150,6 @@ services:
      openemail-network:
        aliases:
          - nextcloud
-
-  ncweb-openemail:
-    image: nginx
-    ports:
-      - 127.0.0.1:8011:80
-    links:
-      - nextcloud-openemail
-    volumes:
-      - ./data/conf/ncweb/nginx.conf:/etc/nginx/nginx.conf:ro
-    volumes_from:
-      - nextcloud-openemail
-    restart: always
-    networks:
-      openemail-network:
-        aliases:
-          - ncweb
 
   redis-openemail:
     image: openemail/redis:latest
