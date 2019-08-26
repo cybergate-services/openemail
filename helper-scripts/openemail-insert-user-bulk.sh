@@ -21,6 +21,7 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
 	echo -e "\nWorking, please wait..."
 	filename="./openemail-users.csv"
   while read -r line; do
+		source ../openemail.conf
     row="$line"
     export ID=$(echo $row | cut -f1 -d ,) ; echo ${ID}
     export USER=$(echo $row | cut -f2 -d ,) ; echo ${USER}
