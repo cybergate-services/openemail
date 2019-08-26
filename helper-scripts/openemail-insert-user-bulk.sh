@@ -29,13 +29,19 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
     export EMAIL=$(echo $row | cut -f5 -d ,) ; echo ${EMAIL}
     export QUOTA=$(echo $row | cut -f6 -d ,) ; echo ${QUOTA}
     export PWHASH=$(echo $row | cut -f7 -d ,) ; echo ${PWHASH}
-		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @ID=${ID};SET @USER='${USER}';SET @FNAME='${FNAME}';SET @DOMAIN='${DOMAIN}';SET @EMAIL='${EMAIL}';SET @QUOTA=${QUOTA};SET @PWHASH='${PWHASH}';"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @ID=${ID};"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @USER='${USER}';"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @FNAME='${FNAME}';"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @DOMAIN='${DOMAIN}';"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @EMAIL='${EMAIL}';"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @QUOTA=${QUOTA};"
+		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "SET @PWHASH='${PWHASH}';"
 		docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO mailbox (username, password, name, quota, local_part, domain, attributes, active) VALUES (@EMAIL, @PWHASH, @FNAME, @QUOTA, @USER, @DOMAIN, '{\"force_pw_update\":\"0\",\"tls_enforce_in\":\"0\",\"tls_enforce_out\":\"0\",\"sogo_access\":\"1\",\"mailbox_format\":\"maildir:\",\"quarantine_notification\":\"never\"}', 1);"
     docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO alias (id, address, goto, domain, active) VALUES (@ID, @EMAIL, @EMAIL, @DOMAIN, 1);"
 	  docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO quota2 (username, bytes, messages) VALUES (@EMAIL, 0, 0);"
     docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO user_acl (username, spam_alias, tls_policy, spam_score, spam_policy, delimiter_action, syncjobs, eas_reset, sogo_profile_reset, quarantine, quarantine_attachments, quarantine_notification) VALUES (@EMAIL, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);"
 	  docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO _sogo_static_view (c_uid, domain, c_name, c_password, c_cn, mail, aliases, ad_aliases, kind, multiple_bookings) VALUES (@EMAIL, @DOMAIN, @EMAIL, @PWHASH, @FNAME, @EMAIL, '', '', '', -1);"
-	done < "$filename"	
+	done < "$filename"
 	echo "
 User successfully added
 "
