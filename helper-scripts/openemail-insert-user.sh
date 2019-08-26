@@ -23,8 +23,7 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
   docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO alias (id, address, goto, domain, active) VALUES (5, 'info@softlineglobal.com', 'info@softlineglobal.com', 'softlineglobal.com', 1);"
 	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO quota2 (username, bytes, messages) VALUES ('info@softlineglobal.com', 0, 0);"
   docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO user_acl (username, spam_alias, tls_policy, spam_score, spam_policy, delimiter_action, syncjobs, eas_reset, sogo_profile_reset, quarantine, quarantine_attachments, quarantine_notification) VALUES ('info@softlineglobal.com', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);"
-	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO _sogo_static_view (c_uid, domain, c_name, c_password, c_cn, mail, aliases, ad_aliases, kind, multiple_bookings) VALUES ('info@softlineglobal.com', 'softlineglobal.com', 'info@softlineglobal.com', '{SSHA256}d25roPsyy+IQrjycnGmXFlwahZmwp9z8SHj4JIHS9xY5ZTQ2Y2Q5MGM0YjY3NzVk', 'Softline Info', 'info@softlineglobal.com', '', '', '', -1);"
-
+	docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e "INSERT INTO _sogo_static_view (c_uid, domain, c_name, c_password, c_cn, mail, aliases, ad_aliases, kind, multiple_bookings) VALUES ('info@softlineglobal.com', 'softlineglobal.com', 'info@softlineglobal.com', '{SSHA256}4BrbE0bJqOcY//mYmqSbHCPjx+GyAYZ1NCnr50lFtl1lZDJmMDdiMGQ5NDkxMmRh', 'Softline Info', 'info@softlineglobal.com', '', '', '', -1);"
 	echo "
 User successfully added
 "
