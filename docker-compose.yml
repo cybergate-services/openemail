@@ -125,32 +125,6 @@ services:
        aliases:
          - rainloop
 
-  nextcloud-openemail:
-   image: nextcloud:apache
-   links:
-     - mysql-openemail
-   container_name: nextcloud
-   hostname: nextcloud
-   environment:
-     - MYSQL_DATABASE=${NCDBNAME}
-     - MYSQL_USER=${DBUSER}
-     - MYSQL_PASSWORD=${DBPASS}
-     - MYSQL_HOST=mysql
-     - NEXTCLOUD_TRUSTED_DOMAINS=mail.softlineglobal.com softlineglobal.com mail.cybergatelabs.com
-     - REDIS_HOST=redis
-   volumes:
-     - nextcloud-vol-1:/var/www/html
-   restart: always
-   depends_on:
-     - mysql-openemail
-     - redis-openemail
-   dns:
-     - ${IPV4_NETWORK:-172.22.1}.254
-   networks:
-     openemail-network:
-       aliases:
-         - nextcloud
-
   redis-openemail:
     image: openemail/redis:latest
     container_name: redis
@@ -211,7 +185,7 @@ services:
 
   php-fpm-openemail:
     image: openemail/php-fpm:latest
-    container_name: phpfpm
+    container_name: php-fpm
     command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
     depends_on:
       - redis-openemail
@@ -612,4 +586,3 @@ volumes:
   postfix-vol-1:
   crypt-vol-1:
   sogo-web-vol-1:
-  nextcloud-vol-1:
