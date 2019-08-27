@@ -25,7 +25,7 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
 	while read id user fname domain email quota pwhash
   do
     echo "INSERT INTO mailbox (username, password, name, quota, local_part, domain, attributes, active) VALUES ('$email', '$fwhash', '$fname',  $quota, '$user', '$domain', '{\"force_pw_update\":\"0\",\"tls_enforce_in\":\"0\",\"tls_enforce_out\":\"0\",\"sogo_access\":\"1\",\"mailbox_format\":\"maildir:\",\"quarantine_notification\":\"never\"}', 1);"
-	done < openemail-users.csv | docker exec -it $(docker ps -qf name=mysql) mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e;
+	done < openemail-users.csv | docker-compose exec -T mysql-openemail mysql -u${DBUSER} -p${DBPASS} ${DBNAME} -e;
 	echo "finish"
 	echo "
 User successfully added
