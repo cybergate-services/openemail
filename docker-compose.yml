@@ -601,6 +601,8 @@ services:
     ports:
       - 8200:8200
     restart: always
+    dns:
+      - ${IPV4_NETWORK:-172.22.1}.254
     networks:
       openemail-network:
         aliases:
