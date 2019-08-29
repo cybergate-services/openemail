@@ -1,20 +1,20 @@
 version: '2.1'
 services:
-  heimdall-openemail:
-    image: linuxserver/heimdall
-    container_name: heimdall
-    hostname: heimdall
+  apps-openemail:
+    image: openemail/apps:latest
+    container_name: apps
+    hostname: apps
     environment:
       - PUID=1001
       - PGID=1001
       - TZ=${TZ}
     volumes:
-      - ./config/heimdall:/config
+      - ./data/conf/heimdall:/config
     restart: always
     networks:
       openemail-network:
         aliases:
-          - heimdall
+          - apps
 
   unbound-openemail:
     image: openemail/unbound:latest
@@ -54,6 +54,30 @@ services:
       openemail-network:
         aliases:
           - mysql
+
+  db-backup-openemail:
+    container_name: db-backup
+    image: openemail/mariadb-backup:latest
+    hostname: apps
+    links:
+     - mysql-openemail
+    volumes:
+      - /opt/backups/mariadb:/backups
+    environment:
+      - DB_SERVER=mysql
+      - DB_USER=root
+      - DB_PASSWORD=${DBROOT}
+      - DB_DUMP_FREQ=1440
+      - DB_DUMP_BEGIN=0000
+      - DB_CLEANUP_TIME=8640
+      - MD5=TRUE
+      - COMPRESSION=XZ
+      - SPLIT_DB=TRUE
+    restart: always
+    networks:
+      openemail-network:
+        aliases:
+          - apps
 
   phpmyadmin-openemail:
     image: openemail/phpmyadmin:latest
@@ -560,6 +584,27 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /lib/modules:/lib/modules:ro
+
+  backup-openemail:
+    image: openemail/backup:latest
+    container_name: backup
+    hostname: backups
+    environment:
+      - PUID=1001
+      - PGID=1001
+      - TZ=${TZ}
+      - CLI_ARGS= #optional
+    volumes:
+      - ./data/conf/backup:/config
+      - /opt/docker/backups:/backups
+      - /opt/backups:/source
+    ports:
+      - 8200:8200
+    restart: always
+    networks:
+      openemail-network:
+        aliases:
+          - backup
 
 networks:
   openemail-network:
