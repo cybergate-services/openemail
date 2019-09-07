@@ -106,53 +106,53 @@ function backup() {
 }
 
 function restore() {
-  docker stop $(docker ps -qf name=watchdog-openemail)
+  docker stop $(docker ps -qf name=watchdog)
   RESTORE_LOCATION="${1}"
   shift
   while (( "$#" )); do
     case "$1" in
     vmail)
-      docker stop $(docker ps -qf name=dovecot-openemail)
+      docker stop $(docker ps -qf name=dovecot)
       docker run -it --rm \
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_vmail-vol-1):/vmail \
         debian:stretch-slim /bin/tar -Pxvzf /backup/backup_vmail.tar.gz
-      docker start $(docker ps -aqf name=dovecot-openemail)
+      docker start $(docker ps -aqf name=dovecot)
       echo
       echo "In most cases it is not required to run a full resync, you can run the command printed below at any time after testing wether the restore process broke a mailbox:"
       echo
-      echo "docker exec $(docker ps -qf name=dovecot-openemail) doveadm force-resync -A '*'"
+      echo "docker exec $(docker ps -qf name=dovecot) doveadm force-resync -A '*'"
       echo
       read -p "Force a resync now? [y|N] " FORCE_RESYNC
       if [[ ${FORCE_RESYNC,,} =~ ^(yes|y)$ ]]; then
-        docker exec $(docker ps -qf name=dovecot-openemail) doveadm force-resync -A '*'
+        docker exec $(docker ps -qf name=dovecot) doveadm force-resync -A '*'
       else
         echo "OK, skipped."
       fi
       ;;
     redis)
-      docker stop $(docker ps -qf name=redis-openemail)
+      docker stop $(docker ps -qf name=redis)
       docker run -it --rm \
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_redis-vol-1):/redis \
         debian:stretch-slim /bin/tar -Pxvzf /backup/backup_redis.tar.gz
-      docker start $(docker ps -aqf name=redis-openemail)
+      docker start $(docker ps -aqf name=redis)
       ;;
     crypt)
-      docker stop $(docker ps -qf name=dovecot-openemail)
+      docker stop $(docker ps -qf name=dovecot)
       docker run -it --rm \
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_crypt-vol-1):/crypt \
         debian:stretch-slim /bin/tar -Pxvzf /backup/backup_crypt.tar.gz
-      docker start $(docker ps -aqf name=dovecot-openemail)
+      docker start $(docker ps -aqf name=dovecot)
       ;;
     rspamd)
-      docker stop $(docker ps -qf name=rspamd-openemail)
+      docker stop $(docker ps -qf name=rspamd)
       docker run -it --rm \
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_rspamd-vol-1):/rspamd \
         debian:stretch-slim /bin/tar -Pxvzf /backup/backup_rspamd.tar.gz
-      docker start $(docker ps -aqf name=rspamd-openemail)
+      docker start $(docker ps -aqf name=rspamd)
       ;;
     postfix)
       docker stop $(docker ps -qf name=postfix-openemail)
@@ -160,11 +160,11 @@ function restore() {
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_postfix-vol-1):/postfix \
         debian:stretch-slim /bin/tar -Pxvzf /backup/backup_postfix.tar.gz
-      docker start $(docker ps -aqf name=postfix-openemail)
+      docker start $(docker ps -aqf name=postfix)
       ;;
     mysql)
       SQLIMAGE=$(grep -iEo '(mysql|mariadb)\:.+' ${COMPOSE_FILE})
-      docker stop $(docker ps -qf name=mysql-openemail)
+      docker stop $(docker ps -qf name=mysql)
       docker run \
         -it --rm \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_mysql-vol-1):/var/lib/mysql/ \
@@ -176,12 +176,12 @@ function restore() {
         echo Restoring... && \
         gunzip < backup/backup_mysql.gz | mysql -uroot && \
         mysql -uroot -e SHUTDOWN;"
-      docker start $(docker ps -aqf name=mysql-openemail)
+      docker start $(docker ps -aqf name=mysql)
       ;;
     esac
     shift
   done
-  docker start $(docker ps -aqf name=watchdog-openemail)
+  docker start $(docker ps -aqf name=watchdog)
 }
 
 if [[ ${1} == "backup" ]]; then
