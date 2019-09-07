@@ -155,7 +155,7 @@ function restore() {
       docker start $(docker ps -aqf name=rspamd)
       ;;
     postfix)
-      docker stop $(docker ps -qf name=postfix-openemail)
+      docker stop $(docker ps -qf name=postfix)
       docker run -it --rm \
         -v ${RESTORE_LOCATION}:/backup \
         -v $(docker volume ls -qf name=${CMPS_PRJ}_postfix-vol-1):/postfix \
