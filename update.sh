@@ -336,7 +336,7 @@ sleep 2
 docker-compose down
 
 # Silently fixing remote url to openemail
-git remote set-url origin https://github.com/openemail/openemail
+git remote set-url origin https://github.com/cybergate-services/openemail
 echo -e "\e[32mCommitting current status...\e[0m"
 [[ -z "$(git config user.name)" ]] && git config user.name moo
 [[ -z "$(git config user.email)" ]] && git config user.email moo@cow.moo
