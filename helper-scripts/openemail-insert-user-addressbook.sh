@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-$1=MAILBOX
-$2=ADDRESBOOKCSV
+MAILBOX=$1
+ADDRESBOOKCSV=$2
+
 [[ -f openemail.conf ]] && source openemail.conf
 [[ -f ../openemail.conf ]] && source ../openemail.conf
 
@@ -31,7 +32,9 @@ if [[ "$response" =~ ^(yes|y)$ ]]; then
 	IFS=,
 	while read fname lname dsplname email
   do
-    echo "INSERT INTO sogo_quick_contact (c_folder_id, c_name, c_givenname, c_cn, c_sn, c_screenname, c_l, c_mail, c_o, c_ou, c_telephonenumber, c_categories, c_component, c_hascertificate) VALUES ('$ID', '48-5D837D00-D-153063E0.vcf', '$fname', '$dsplname', '$lname', '', NULL, '$email', '', '', NULL, NULL, 'vcard', '0');"
+		UUID=$(uuidgen)
+    CNAME=${UUID}.vcf
+    echo "INSERT INTO sogo_quick_contact (c_folder_id, c_name, c_givenname, c_cn, c_sn, c_screenname, c_l, c_mail, c_o, c_ou, c_telephonenumber, c_categories, c_component, c_hascertificate) VALUES ('$ID', '$CNAME', '$fname', '$dsplname', '$lname', '', NULL, '$email', '', '', NULL, NULL, 'vcard', '0');"
 	done < $ADDRESBOOKCSV | docker-compose exec -T mysql-openemail mysql -u${DBUSER} -p${DBPASS} ${DBNAME} ;
 	echo "All addressbook entriess successfully added to sogo_quick_contact table."
 else
