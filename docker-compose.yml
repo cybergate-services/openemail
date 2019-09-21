@@ -272,7 +272,7 @@ services:
     volumes:
       - ./data/conf/sogo/:/etc/sogo/
       - ./data/web/inc/init_db.inc.php:/init_db.inc.php
-      - ./data/web/img/openemail.ico:/usr/lib/GNUstep/SOGo/WebServerResources/img/sogo.ico
+      - ./data/conf/sogo/openemail.ico:/usr/lib/GNUstep/SOGo/WebServerResources/img/sogo.ico
       - ./data/conf/sogo/custom-sogo.js:/usr/lib/GNUstep/SOGo/WebServerResources/js/custom-sogo.js
       - ./data/conf/sogo/theme-blue.js:/usr/lib/GNUstep/SOGo/WebServerResources/js/theme.js
       - ./data/conf/sogo/theme-blue.css:/usr/lib/GNUstep/SOGo/WebServerResources/css/theme-default.css

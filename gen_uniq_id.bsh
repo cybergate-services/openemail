@@ -1,0 +1,503 @@
+#!/usr/bin/env bash 
+
+#############################################################################
+###########################################################################
+### Created by A.M.Danischewski (c) 2015 v1.17
+### Issues: If you find any issues emai1 me at my <first name> dot 
+###         <my last name> at gmail dot com.  
+###
+### This program generates a random md5sum based on the current time to 
+### nanoseconds and collected mouse movement data/random data over .25 
+### seconds or to an user-specified floating point timeframe.  
+### 
+### This program requires (to work to full capacity) by default: 
+### md5sum <-- required, timeout, xinput, /dev/urandom, xev
+### 
+### This program is self-modifying and intentionally sensitive to line 
+### number changes. e.g. adding a line in this header will break something
+### 
+### This program is free software: you can redistribute it and/or modify
+### it under the terms of the GNU General Public License as published by
+### the Free Software Foundation, either version 3 of the License, or
+### (at your option) any later version.
+###
+### This program is distributed in the hope that it will be useful,
+### but WITHOUT ANY WARRANTY; without even the implied warranty of
+### MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+### GNU General Public License for more details.
+###
+### You should have received a copy of the GNU General Public License
+### along with this program.  If not, see <http://www.gnu.org/licenses/>.
+###########################################################################
+#############################################################################
+
+declare  -r TIME_STAMP=$(date +%Y%m%d%H%M%S%N)
+declare  -r SED_DELIM=$(echo -en "\001")
+
+declare     STATEMENT="I AM AN EVERLASTING SOVEREIGN SENTIENT WITHOUT A CREATOR FROM THE NUMBER LINE"
+declare  -r STMNT_CHG_TXT="declare     STATEMENT=" ## should exactly match entry first part above
+declare -ir STMNT_CHG_LINENO=37  ## should match line no two entries above this line
+
+  ## This device ID should match the corresponding pointer device 
+  ## shown in xinput --list 
+declare     MOUSE_DEVICE=11
+declare  -r MOUSE_CHG_TXT="declare     MOUSE_DEVICE=" ## should exactly match entry first part above
+declare -ir MOUSE_CHG_LINENO=43  ## should match line no two entries above this line
+declare     MOUSE_DATA=""
+ ## Time in seconds to collect mouse movement data. 
+declare     MOUSE_DATA_COLLECT_TIME=".25"
+declare     USE_MOUSE_DATA=1 
+
+declare     RANDOM_DEVICE="/dev/urandom" 
+declare  -r RANDOM_CHG_TXT="declare     RANDOM_DEVICE=" ## should exactly match entry above
+declare -ir RANDOM_CHG_LINENO=51  ## should match line no two entries above this line
+declare     RANDOM_DATA="" 
+declare     RANDOM_DATA_COLLECT_TIME=".25" 
+declare     USE_RANDOM_DATA=1 
+
+declare  -r XEV_WIN_NAME="Generate Unique Random ID - Move mouse in window!"
+declare  -r XEV_WIN_GEOMETRY="500x250"
+declare     XEV_DATA_COLLECT_TIME="3" 
+declare     XEV_DATA=""
+declare     USE_XEV_DATA=0 
+
+declare  -r CHECK_FLOAT="%f"  
+declare  -r CHECK_INTEGER="%i"  
+declare  -r DEFAULT_STATEMENT="I AM AN EVERLASTING SOVEREIGN SENTIENT WITHOUT A CREATOR FROM THE NUMBER LINE"
+declare  -r DEFAULT_MOUSE_DEVICE=11
+declare  -r DEFAULT_RANDOM_DEVICE="/dev/urandom"
+
+function usage() {
+cat <<EOF
+
+Usage: ${0##*/} <-h> <-d> <-m> <-x> <-r> <-s> <-M -R -S>|<-D>
+
+OPTIONS:
+      -h           Show this message
+      -d           Turn on debug mode, useful for tweaking options. 
+      -m=0.00..    Mouse data collection time, 0 turns off mouse data, 
+                   any float turns on collecting mouse movement data 
+                   for the random generated. Default is (${MOUSE_DATA_COLLECT_TIME} seconds) 
+      -x=[0.00..]  Xev xevent data collection time, any float turns on 
+                   collecting xev xevent data. Turned off by default, 
+                   the option flag turns it on and any non-zero float 
+                   provides the duration of xevent data collection.   
+                   Default without any argument is (${XEV_DATA_COLLECT_TIME} seconds)
+      -r=0.00..    Random data collection time, 0 turns off random data 
+                   collection, any float turns on collecting random data 
+                   for the duration time in seconds for the random 
+                   generated. Default is (${RANDOM_DATA_COLLECT_TIME} seconds) 
+      -s="dynatxt" String of text to incorporate into the random md5sum
+      -M=0-20..    Change default value of mouse device id (that 
+                   corresponds to xinput --list mouse device id)
+      -R="/dev/.." Change default value of the random device to use 
+      -S="U QUOTE" Change default value of the static text block 
+      -D           Reset script to "shipped" default values 
+      
+EOF
+} 
+ 
+function help() {
+cat <<EOF
+
+Description: ${0##*/}
+
+This script currently outputs a random md5sum of a string consisting of 
+the current time, a block of text, mouse movement data and random data. 
+
+This program generates the random md5 string based on the current time 
+to the nanosecond (date +%Y%m%d%H%M%S%N), combined with - by default - 
+${MOUSE_DATA_COLLECT_TIME} seconds of mouse data, ${RANDOM_DATA_COLLECT_TIME} seconds of random data and a default 
+static text block. 
+
+The default mouse device id currently set is ${MOUSE_DEVICE}, the 
+default this script "ships" with is ${DEFAULT_MOUSE_DEVICE} this is likely wrong for your 
+system so you will need to change it to the appropriate value. You may 
+set a new default value using the -M option.   
+
+The appropriate mouse device id to use can be determined by 
+running: xinput --list 
+
+The default random device id currently set is ${RANDOM_DEVICE}, the 
+default the script "ships" with is /dev/urandom which usually exists 
+on most *nix boxes. If you would like to use a random device other than 
+the current default you may set a new default value using the -R option.  
+
+The default text currently set is: 
+"${STATEMENT}"  
+
+If you like to use a different statement text you may set a new default 
+value using the -S option.  
+
+You can also supply your own text statement dynamically with the 
+-s option, this allows for further random seeding opportunity. 
+
+The -x option turns on collection of xevent data, turned off by default 
+any the -x with any float or no argument turns it on for the default 
+duration time of ${XEV_DATA_COLLECT_TIME} seconds. This option will create a new xwindow on 
+the screen for the option argument float parameter in seconds. This 
+option records all Xevents that occur while the xev window is open and 
+in focus. Move the mouse around in the displayed monitoring window for 
+best results. The more X events generated the better the seed data and 
+as a result a higher quality random will be produced.  
+
+Caveat: -M, -R, -S, -D options requires that \${0}, now set to: 
+   ${0} 
+ refers to the location of this script, either as a fully qualified 
+ path such as /favorite/place/for/\${0} or simply \${0} if this script 
+ resides in the working directory from where it is run. 
+
+ These options require further that you have write permission on \${0}. 
+
+ The -M, -R, -S, -D options should be issued VERY INFREQUENTLY, once 
+ they are run the values become the new default values. If you have 
+ modified this script at all, or you think for any reason the line 
+ numbers have changed may cause these options to fail (by design). 
+
+ This script does make a backup of the original script when default 
+ settings change but the backup will get clobbered from repeated use. 
+
+You may reset the default options back to the "shipped" values with -D.
+EOF
+
+usage 
+
+cat <<EOF
+  E.g.
+        ## To generate a random md5sum based on random data collected 
+        ## over .5 seconds and 1 second of collected mouse movement data
+      \$ ${0##*/} -r.5 -m".0001e+4" 
+
+        ## To generate a random md5sum based on random data collected 
+        ## over 0.004353 seconds without collected mouse movement data
+      \$ ${0##*/} -r".000004353354e+03" -m0 
+
+        ## To generate a random md5sum based on xevent data collected 
+        ## over 5 seconds without collected mouse movement data 
+      \$ ${0##*/} -m0 -x5
+
+        ## To generate a random md5sum based on xevent data collected 
+        ## over the xev xevent default of ${XEV_DATA_COLLECT_TIME} seconds without collected 
+        ## mouse movement data  or random data with debug turned on 
+      \$ ${0##*/} -m0 -r0 -x -d
+
+        ## To turn off mouse collection, and random collection and 
+        ## seed with the last 5 commands from history w/debug 
+      \$ ${0##*/} -d -m0 -r0 -s$(history|tail -5)
+
+        ## To generate a random md5sum without random data collected 
+        ## and with 1 second of collected mouse movement data and with a 
+        ## custom default text 
+      \$ ${0##*/} -r0 -m1 -s"For my benefit only, I .." 
+
+        ## To debug and see all internal variables 
+      \$ ${0##*/} -d 2>&1 | more
+
+        ## To change the defaults for the mouse dev to device id 10, 
+        ## random device to /dev/really_quick_random and the default 
+        ## statement text to a new default 
+      \$ ${0##*/} -M=10 -R="/dev/really_quick_random" \\
+                        -S="A DECLARATION OF SOVEREIGNTY NEED NO WITNESS"
+
+        ## To reset all default options back to the "shipped" values  
+      \$ ${0##*/} -D 
+      
+EOF
+}
+
+function set_mouse_data() { 
+MOUSE_DATA=$(timeout ${MOUSE_DATA_COLLECT_TIME} xinput --test ${MOUSE_DEVICE} 2>/dev/random) 
+[[ $? -lt 124 ]] && { echo "Problem using mouse device id ${MOUSE_DEVICE}, use xinput --list to find the" 1>&2; 
+  	                  echo "appropriate mouse device and set a new default mouse device id with" 1>&2; 
+	                  echo "the -M option." 1>&2; }
+} 
+
+function set_xev_data() { 
+local -i ERROR_FLAG=0 
+XEV_DATA=$(timeout ${XEV_DATA_COLLECT_TIME} xev -geometry "${XEV_WIN_GEOMETRY}" -name "${XEV_WIN_NAME}" 2>/dev/random) 
+[[ $? -lt 124 ]] && { echo "Problem using xev." 1>&2; }
+} 
+
+function set_rand_data() { 
+if [[ ! -c "${RANDOM_DEVICE}" ]]; then  
+ echo "Problem finding character random device ${RANDOM_DEVICE}, a new random device " 1>&2; 
+ echo "may be set with the -R option." 1>&2; 
+else 
+ RANDOM_DATA=$(timeout ${RANDOM_DATA_COLLECT_TIME} cat "${RANDOM_DEVICE}" | strings)
+fi  
+} 
+
+function check_writable() { 
+ local ERROR_MESG="Error - Permission denied for writing to ${0}.\nFor options -M,-R,-S this script: ${0} \nmust be writable." 
+ if [[ ! -w "${0}" ]]; then 
+    echo -e "${ERROR_MESG}" 1>&2
+    exit -1 
+ fi 
+} 
+
+ ## <arg 1> String - String to escape  
+function escape_string() { 
+ local    ESCAPED_STRING="${1}"   
+ local -i ADD_BACKSLASH=$(($(echo -En "${ESCAPED_STRING}" | sed "s${SED_DELIM}\(^.*[^\\]\)\([\\]*\)\$${SED_DELIM}\2${SED_DELIM}" | wc -c)%2)) 	
+ ESCAPED_STRING="$(sed "s${SED_DELIM}[^0-9 A-Za-z._-]${SED_DELIM}\x5c\x5c&${SED_DELIM}g" <<< "${ESCAPED_STRING}")" 
+  ## This logic is to handle the cases of strings ending in an uneven number of backslashes, this would 
+  ## have the effect of escaping our saved text' closing quote mark and that would break this script, 
+  ## so this logic makes sure that if there is an odd number of ending backslashes then an extra backslash 
+  ## is added to even it out and furthermore it doubly escapes all backslashes to make it easier to print 
+  ## them using simple echo than having to worry about not having the shell crunch them.  
+  ## Note if further processing of the variable was needed it may cause further crunching so it would 
+  ## make sense in that case to treat this differently. 
+ ((${ADD_BACKSLASH})) && ESCAPED_STRING="${ESCAPED_STRING}\\\\"
+ ESCAPED_STRING=$(echo -En "${ESCAPED_STRING}" | sed "s${SED_DELIM}\x5c\x5c\x5c\x5c${SED_DELIM}\x5c\x5c\x5c\x5c\x5c\x5c\x5c\x5c${SED_DELIM}g")
+ echo -En "${ESCAPED_STRING}"
+}   
+
+ ## <arg 1> Number - Number to check
+ ## <arg 2> String - Number type to check
+ ## <arg 3> String - Error message
+function check_number() {
+  local NUMBER="${1}"
+  local NUMBER_TYPE="${2}"
+  local ERROR_MESG="${3}"
+  local FILTERED_NUMBER=$(sed 's/[^.e0-9+\^]//g' <<< "${NUMBER}")
+  local -i PASS=1
+  local -i FAIL=0
+    if [[ -z "${NUMBER}" ]]; then 
+        echo "Empty number argument passed to check_number()." 1>&2
+        echo "${ERROR_MESG}" 1>&2
+        echo "${FAIL}"          
+  elif [[ -z "${NUMBER_TYPE}" ]]; then 
+        echo "Empty number type argument passed to check_number()." 1>&2
+        echo "${ERROR_MESG}" 1>&2
+        echo "${FAIL}"          
+  elif [[ ! "${#NUMBER}" -eq "${#FILTERED_NUMBER}" ]]; then 
+        echo "Non numeric characters found in number argument passed to check_number()." 1>&2
+        echo "${ERROR_MESG}" 1>&2
+        echo "${FAIL}"          
+  else  
+   case "${NUMBER_TYPE}" in
+     "${CHECK_FLOAT}")
+         if ((! $(printf "${CHECK_FLOAT}" "${NUMBER}" &>/dev/random;echo $?))); then
+            echo "${PASS}"
+         else
+            echo "${ERROR_MESG}" 1>&2
+            echo "${FAIL}"
+         fi
+         ;;
+     "${CHECK_INTEGER}")
+         if ((! $(printf "${CHECK_INTEGER}" "${NUMBER}" &>/dev/random;echo $?))); then
+            echo "${PASS}"
+         else
+            echo "${ERROR_MESG}" 1>&2
+            echo "${FAIL}"
+         fi
+         ;;
+                      *)
+         echo "Invalid number type format: ${NUMBER_TYPE} to check_number()." 1>&2
+         echo "${FAIL}"
+         ;;
+    esac
+ fi 
+}
+
+ ## Note: Number can be any printf acceptable format and includes leading quotes and quotations, 
+ ##       and anything else that corresponds to the POSIX specification. 
+ ##       E.g. "'1e+03" is valid POSIX float format, see http://mywiki.wooledge.org/BashFAQ/054
+ ## <arg 1> Number - Number to print
+ ## <arg 2> String - Number type to print
+function print_number() { 
+  local NUMBER="${1}" 
+  local NUMBER_TYPE="${2}" 
+  case "${NUMBER_TYPE}" in 
+      "${CHECK_FLOAT}") 
+           printf "${CHECK_FLOAT}" "${NUMBER}" || echo "Error printing Float in print_number()." 1>&2
+        ;;                 
+    "${CHECK_INTEGER}") 
+           printf "${CHECK_INTEGER}" "${NUMBER}" || echo "Error printing Integer in print_number()." 1>&2
+        ;;                 
+                     *) 
+        echo "Invalid number type format: ${NUMBER_TYPE} to print_number()." 1>&2
+        ;;                 
+   esac
+} 
+
+ ## <arg 1> String - String to trim single ending whitespace from
+function trim_string() { 
+ local STRING="${1}" 
+ echo -En $(sed 's/ $//' <<< "${STRING}") || echo "Error in trim_string() expected a sensible string, found: ${STRING}" 1>&2
+} 
+
+function print_uniq_id() { 
+((${USE_MOUSE_DATA}))  && set_mouse_data
+((${USE_RANDOM_DATA})) && set_rand_data
+((${USE_XEV_DATA}))    && set_xev_data
+echo -En "${TIME_STAMP}${STATEMENT}${XEV_DATA}${MOUSE_DATA}${RANDOM_DATA}" | md5sum | awk '{print $1}' 
+}  
+
+ ## This a hack for getopts because getopts does not support optional 
+ ## arguments very intuitively. E.g. Regardless of whether the values 
+ ## begin with a dash, getopts presumes that anything following an 
+ ## option that takes an option argument is the option argument. To fix   
+ ## this the index variable OPTIND is decremented so it points back to  
+ ## the otherwise skipped value in the array option argument. This works 
+ ## except for when the missing argument is on the end of the list, 
+ ## in this case getopts will not have anything to gobble as an 
+ ## argument to the option and will want to error out. To avoid this an
+ ## empty string is appended to the argument array, yet in so doing 
+ ## care must be taken to manage this added empty string appropriately. 
+ ## As a result any option that doesn't exit at the time its processed
+ ## needs to be made to accept an argument, otherwise you will never 
+ ## know if the option will be the last option sent thus having an empty 
+ ## string attached and causing it to land in the default handler. 
+function process_options() { 
+local OPTIND OPTERR=0 OPTARG OPTION h m x d r s M R S D
+local ERROR_MSG=""  
+local OPTION_VAL=""
+local EXIT_VALUE=0 
+local -i NUM_OPTIONS
+let NUM_OPTIONS=${#@}+1
+while getopts “:h?d:DM:R:S:s:x:m:r:” OPTION "$@"; 
+ do
+     case "$OPTION" in
+         h)
+             help | more 
+             exit 0
+             ;;
+         m)
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG="Invalid mouse data collection time: Integer or floating point number required."
+             if [[ -z "${OPTION_VAL}" ]]; then 
+               USE_MOUSE_DATA=1  ## if argument is empty use the current default          
+             elif [[ "${OPTION_VAL}" =~ ^-. ]]; then 
+               let OPTIND=${OPTIND}-1
+               USE_MOUSE_DATA=1  ## if argument is missing use the current default          
+             elif [ "${OPTION_VAL}" = "0" ]; then 
+               USE_MOUSE_DATA=0 
+             elif (($(check_number "${OPTION_VAL}" "${CHECK_FLOAT}" "${ERROR_MSG}"))); then 
+               MOUSE_DATA_COLLECT_TIME=$(print_number "${OPTION_VAL}" "${CHECK_FLOAT}")
+             else 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             fi 
+             ;;
+         x)
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG="Invalid xevent data collection time: Integer or floating point number required."
+             if [[ -z "${OPTION_VAL}" ]]; then 
+               USE_XEV_DATA=1  ## if argument is empty use the current default 
+             elif [[ "${OPTION_VAL}" =~ ^-. ]]; then 
+               let OPTIND=${OPTIND}-1
+               USE_XEV_DATA=1  ## if argument is missing use the current default 
+             elif [ "${OPTION_VAL}" = "0" ]; then 
+               USE_XEV_DATA=0 
+             elif (($(check_number "${OPTION_VAL}" "${CHECK_FLOAT}" "${ERROR_MSG}"))); then 
+               XEV_DATA_COLLECT_TIME=$(print_number "${OPTION_VAL}" "${CHECK_FLOAT}")
+               USE_XEV_DATA=1 
+             else 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             fi 
+             ;;
+         r)
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG="Invalid random device data collection time: Integer or floating point number required."
+             if [[ -z "${OPTION_VAL}" ]]; then 
+               USE_RANDOM_DATA=1  ## if argument empty use the current default        
+             elif [[ "${OPTION_VAL}" =~ ^-. ]]; then 
+               let OPTIND=${OPTIND}-1
+               USE_RANDOM_DATA=1  ## if argument is missing use the current default 
+             elif [ "${OPTION_VAL}" = "0" ]; then 
+               USE_RANDOM_DATA=0 
+             elif (($(check_number "${OPTION_VAL}" "${CHECK_FLOAT}" "${ERROR_MSG}"))); then 
+               RANDOM_DATA_COLLECT_TIME=$(print_number "${OPTION_VAL}" "${CHECK_FLOAT}") 
+             else 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             fi 
+             ;;
+         d)
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             [[ ! -z "${OPTION_VAL}" && "${OPTION_VAL}" =~ ^-. ]] && let OPTIND=${OPTIND}-1             
+             DEBUGMODE=1
+             set -xuo pipefail
+             ;;
+         s)
+             STATEMENT=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             if [[ ! -z "${STATEMENT}" && "${STATEMENT}" =~ ^-. ]]; then ## if you want a statement that begins with a dash, escape it 
+               let OPTIND=${OPTIND}-1
+             else 
+               STATEMENT=$(escape_string "${STATEMENT}")   
+             fi 
+             ;;
+         M)  
+             check_writable
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG=$(echo "Error - Invalid mouse device id: ${OPTION_VAL}, Integer required"\
+                              "use xinput --list to find the appropriate mouse device id.")
+             if [[ -z "${OPTION_VAL}" ]]; then 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             elif [[ "${OPTION_VAL}" =~ ^-. ]]; then 
+               let OPTIND=${OPTIND}-1
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             elif (($(check_number "${OPTION_VAL}" "${CHECK_INTEGER}" "${ERROR_MSG}"))); then 
+               MOUSE_DEVICE=$(print_number "${OPTION_VAL}" "${CHECK_INTEGER}")
+               sed -bi "${MOUSE_CHG_LINENO}{/^${MOUSE_CHG_TXT}/{s/^${MOUSE_CHG_TXT}.*/${MOUSE_CHG_TXT}${MOUSE_DEVICE}/}}" "${0}"
+             else 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             fi 
+             ;;                      
+         R)  
+             check_writable
+             OPTION_VAL=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG=$(echo "Error - Invalid character device: ${OPTION_VAL},"\
+                              "the value supplied to -R is expected to be a fully "\
+                              "qualified path to a random character device.")             
+             if [[ -z "${OPTION_VAL}" ]]; then 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             elif [[ "${OPTION_VAL}" =~ ^-. ]]; then 
+               let OPTIND=${OPTIND}-1
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             elif [[ -c "${OPTION_VAL}" ]]; then 
+               RANDOM_DEVICE="${OPTION_VAL}"       
+               sed -bi "${RANDOM_CHG_LINENO}{"$'\x5c'"${SED_DELIM}^${RANDOM_CHG_TXT}${SED_DELIM}{s${SED_DELIM}^${RANDOM_CHG_TXT}.*${SED_DELIM}${RANDOM_CHG_TXT}\"${RANDOM_DEVICE}\"${SED_DELIM}}}" "${0}"
+             else 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             fi 
+             ;;                      
+         S)   
+             check_writable
+             STATEMENT=$(((${NUM_OPTIONS}==${OPTIND})) && trim_string "${OPTARG##*=}" || echo -En "${OPTARG##*=}")
+             ERROR_MSG="Error - Default text string to set cannot be empty."
+             if [[ -z "${STATEMENT}" ]]; then 
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             elif [[ "${STATEMENT}" =~ ^-. ]]; then ## if you want a statement that begins with a dash, escape it 
+               let OPTIND=${OPTIND}-1
+               echo "${ERROR_MSG}" 1>&2 && exit -1 
+             else 
+               STATEMENT=$(escape_string "${STATEMENT}")   
+               sed -bi "${STMNT_CHG_LINENO}{"$'\x5c'"${SED_DELIM}^${STMNT_CHG_TXT}${SED_DELIM}{s${SED_DELIM}^${STMNT_CHG_TXT}.*${SED_DELIM}${STMNT_CHG_TXT}\"${STATEMENT}\"${SED_DELIM}}}" "${0}"
+             fi 
+             ;;                      
+         D)   
+             check_writable
+             STATEMENT="${DEFAULT_STATEMENT}" 
+             RANDOM_DEVICE="${DEFAULT_RANDOM_DEVICE}"
+             MOUSE_DEVICE="${DEFAULT_MOUSE_DEVICE}" 
+             sed -bi "${STMNT_CHG_LINENO}{"$'\x5c'"${SED_DELIM}^${STMNT_CHG_TXT}${SED_DELIM}{s${SED_DELIM}^${STMNT_CHG_TXT}.*${SED_DELIM}${STMNT_CHG_TXT}\"${STATEMENT}\"${SED_DELIM}}}" "${0}"
+             sed -bi "${RANDOM_CHG_LINENO}{"$'\x5c'"${SED_DELIM}^${RANDOM_CHG_TXT}${SED_DELIM}{s${SED_DELIM}^${RANDOM_CHG_TXT}.*${SED_DELIM}${RANDOM_CHG_TXT}\"${RANDOM_DEVICE}\"${SED_DELIM}}}" "${0}"
+             sed -bi "${MOUSE_CHG_LINENO}{/^${MOUSE_CHG_TXT}/{s/^${MOUSE_CHG_TXT}.*/${MOUSE_CHG_TXT}${MOUSE_DEVICE}/}}" "${0}"
+             echo "All ${0} values successfully reset to \"shipped\" default values." 
+             exit 0
+             ;;          
+         *) 
+             EXIT_VALUE=-1
+             ;&                  
+         ?)
+             usage
+             exit ${EXIT_VALUE}
+             ;;
+     esac
+done
+} 
+
+process_options "$@ " ## extra space, so getopts can find arguments  
+print_uniq_id 
+
+exit 0 
