@@ -275,7 +275,7 @@ services:
       - ./data/conf/sogo/custom-sogo.js:/usr/lib/GNUstep/SOGo/WebServerResources/js/custom-sogo.js
       - ./data/conf/sogo/theme-blue.js:/usr/lib/GNUstep/SOGo/WebServerResources/js/theme.js
       - ./data/conf/sogo/theme-blue.css:/usr/lib/GNUstep/SOGo/WebServerResources/css/theme-default.css
--     - ./data/conf/sogo/openemail.ico:/usr/lib/GNUstep/SOGo/WebServerResources/img/sogo.ico
+      - ./data/conf/sogo/openemail.ico:/usr/lib/GNUstep/SOGo/WebServerResources/img/sogo.ico
       - mysql-socket-vol-1:/var/run/mysqld/
       - sogo-web-vol-1:/sogo_web
     restart: always
