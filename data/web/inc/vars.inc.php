@@ -100,7 +100,7 @@ $SHOW_DKIM_PRIV_KEYS = false;
 // openemail Apps - buttons on login screen
 $OPENEMAIL_APPS = array(
   array(
-    'name' => 'SOGo',
+    'name' => 'Webmail',
     'link' => '/SOGo/',
   )
 );
