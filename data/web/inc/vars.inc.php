@@ -102,8 +102,6 @@ $OPENEMAIL_APPS = array(
   array(
     'name' => 'Webmail',
     'link' => '/SOGo/',
-  )
-  array(
     'name' => 'phpMyadmin',
     'link' => '/phpmyadmin/',
   )
