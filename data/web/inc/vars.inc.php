@@ -103,6 +103,10 @@ $OPENEMAIL_APPS = array(
     'name' => 'Webmail',
     'link' => '/SOGo/',
   )
+  array(
+    'name' => 'phpMyadmin',
+    'link' => '/phpmyadmin/',
+  )
 );
 
 // Rows until pagination begins
