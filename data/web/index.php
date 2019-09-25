@@ -1,14 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/inc/prerequisites.inc.php';
 
-if (strpos($_SERVER['REQUEST_URI'], '/?admin') !== false) {
-   /*Do nothing if user navigates to URL/?admin (Render the index.php page)*/
- } else {
-   /*Add javascript then HTML if this doesn't work*/
-   echo "<script type='text/javascript'>window.location.replace('/SOGo/');</script>";
-   echo "<meta http-equiv='refresh' content='0;url=/SOGo/'>";
- }
-
 if (isset($_SESSION['openemail_cc_role']) && $_SESSION['openemail_cc_role'] == 'admin') {
   header('Location: /admin');
   exit();
