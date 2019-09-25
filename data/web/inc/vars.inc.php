@@ -123,7 +123,7 @@ $SESSION_LIFETIME = 3600;
 $OTP_LABEL = "openemail UI";
 
 // Default "to" address in relay test tool
-$RELAY_TO = "null@hasuna.openemail.io";
+$RELAY_TO = "notifications@cybergate.lk";
 
 // How long to wait (in s) for cURL Docker requests
 $DOCKER_TIMEOUT = 60;
