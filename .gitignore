@@ -34,6 +34,8 @@ data/gitea/
 data/gogs/
 data/conf/sogo/plist_ldap
 data/conf/sogo/sogo-full.svg
+data/conf/sogo/images/*
+data/conf/sogo/themes/*
 .github/
 docker-compose.override.yml
 refresh_images.sh
