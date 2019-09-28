@@ -33,6 +33,7 @@ data/conf/portainer/
 data/gitea/
 data/gogs/
 data/conf/sogo/plist_ldap
+data/conf/sogo/sogo-full.svg
 .github/
 docker-compose.override.yml
 refresh_images.sh
