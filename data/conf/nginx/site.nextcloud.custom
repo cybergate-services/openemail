@@ -1,0 +1,10 @@
+location /nextcloud {
+    return 301 $scheme://$host/nextcloud/;
+}
+location ^~ /nextcloud/ {
+
+    resolver 127.0.0.11 valid=30s;
+    set $upstream_nextcloud nextcloud;
+    rewrite /nextcloud(.*) $1 break;
+    proxy_pass http://$upstream_nextcloud:9000;
+}
