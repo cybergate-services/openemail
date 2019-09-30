@@ -5,8 +5,6 @@ services:
     container_name: nextcloud
     hostname: nextcloud
     restart: always
-    links:
-      - mysql-openemail
     volumes:
       - nextcloud-vol-1:/var/www/html
     environment:
