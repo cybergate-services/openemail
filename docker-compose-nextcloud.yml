@@ -13,7 +13,6 @@ services:
       openemail-network:
         aliases:
           - nextcloud
-
 volumes:
   nextcloud-vol-1:
 
