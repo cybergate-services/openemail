@@ -10,7 +10,7 @@ services:
     environment:
       - MYSQL_HOST=mysql
     networks:
-      openemail-network:
+      openemaildockerized_openemail-network:
         aliases:
           - nextcloud
 volumes:
