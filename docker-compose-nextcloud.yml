@@ -17,5 +17,5 @@ volumes:
   nextcloud-vol-1:
 
 networks:
-  openemail-network:
+  openemaildockerized_openemail-network:
     external: true
