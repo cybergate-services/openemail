@@ -1,0 +1,22 @@
+version: '2.1'
+services:
+  nextcloud-openemail:
+    image: nextcloud:fpm-alpine
+    container_name: nextcloud
+    hostname: nextcloud
+    links:
+        - mysql
+    restart: always
+    volumes:
+      - nextcloud-vol-1:/var/www/html
+    environment:
+      - MYSQL_HOST=mysql
+    networks:
+      openemail-network:
+        aliases:
+          - nextcloud
+volumes:
+  nextcloud-vol-1:
+
+networks:
+  openemail-network:
