@@ -4,8 +4,8 @@ services:
     image: nextcloud:fpm-alpine
     container_name: nextcloud
     hostname: nextcloud
-    links:
-        - mysql-openemail
+    external_links:
+      - mysql-openemail
     restart: always
     volumes:
       - nextcloud-vol-1:/var/www/html
