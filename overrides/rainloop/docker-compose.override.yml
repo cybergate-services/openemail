@@ -1,0 +1,21 @@
+ rainloop-openemail:
+    image: openemail/rainloop:latest
+    container_name: rainloop
+    hostname: rl.${OPENEMAIL_DOMAIN}
+    links:
+      - mysql-openemail
+    environment:
+      - TZ=${TZ}
+      - UPLOAD_MAX_SIZE=25M
+      - LOG_TO_STDOUT=true
+      - MEMORY_LIMIT=128M
+    volumes:
+     - ./data/rainloop:/rainloop/data
+    depends_on:
+     - mysql-openemail
+    dns:
+     - ${IPV4_NETWORK:-172.22.1}.254
+    networks:
+     openemail-network:
+       aliases:
+         - rainloop
