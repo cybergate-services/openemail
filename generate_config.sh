@@ -35,6 +35,16 @@ while [ -z "${OPENEMAIL_HOSTNAME}" ]; do
   fi
 done
 
+echo "Press enter to confirm the entered value."
+while [ -z "${OPENEMAIL_VERSION}" ]; do
+  read -p "OpenEMAIL version : " -e OPENEMAIL_VERSION
+  DOTS=${OPENEMAIL_VERSION//[^.]};
+  if [ ${#DOTS} -lt 2 ] && [ ! -z ${OPENEMAIL_VERSION} ]; then
+    echo "${OPENEMAIL_VERSION} is not the format of X.Y.Z format. An example is 1.0.0"
+    OPENEMAIL_VERSION=
+  fi
+done
+
 if [ -a /etc/timezone ]; then
   DETECTED_TZ=$(cat /etc/timezone)
 elif [ -a /etc/localtime ]; then
@@ -102,6 +112,7 @@ cat << EOF > openemail.conf
 
 OPENEMAIL_HOSTNAME=${OPENEMAIL_HOSTNAME}
 OPENEMAIL_DOMAIN=${OPENEMAIL_DOMAIN}
+OPENEMAIL_VERSION=${OPENEMAIL_VERSION}
 
 # ------------------------------
 # SQL database configuration
