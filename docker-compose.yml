@@ -1,23 +1,6 @@
 version: '2.1'
-services:
-  apps-openemail:
-    image: openemail/apps:latest
-    container_name: apps
-    hostname: apps
-    environment:
-      - PUID=1001
-      - PGID=1001
-      - TZ=${TZ}
-    volumes:
-      - ./data/conf/heimdall:/config
-    restart: always
-    networks:
-      openemail-network:
-        aliases:
-          - apps
-
   unbound-openemail:
-    image: openemail/unbound:latest
+    image: openemail/unbound:${OPENEMAIL_VERSION}
     container_name: unbound
     command: /usr/sbin/unbound
     environment:
@@ -33,7 +16,7 @@ services:
           - unbound
 
   mysql-openemail:
-    image: openemail/mariadb:latest
+    image: openemail/mariadb
     container_name: mysql
     volumes:
       - mysql-vol-1:/var/lib/mysql/
@@ -57,7 +40,7 @@ services:
 
   db-backup-openemail:
     container_name: db-backup
-    image: openemail/mariadb-backup:latest
+    image: openemail/mariadb-backup
     hostname: apps
     links:
      - mysql-openemail
@@ -80,7 +63,7 @@ services:
           - apps
 
   phpmyadmin-openemail:
-    image: openemail/phpmyadmin:latest
+    image: openemail/phpmyadmin
     container_name: phpmyadmin
     hostname: pma.${OPENEMAIL_DOMAIN}
     restart: always
@@ -97,7 +80,7 @@ services:
           - phpmyadmin
   
   redis-openemail:
-    image: openemail/redis:latest
+    image: openemail/redis
     container_name: redis
     volumes:
       - redis-vol-1:/data/
@@ -109,10 +92,11 @@ services:
     networks:
       openemail-network:
         aliases:
+         - mailcow-redis
          - redis
 
   clamd-openemail:
-    image: openemail/clamd:latest
+    image: openemail/clamd:${OPENEMAIL_VERSION}
     container_name: clamd
     restart: always
     environment:
@@ -128,7 +112,7 @@ services:
           - clamd
 
   rspamd-openemail:
-    image: openemail/rspamd:latest
+    image: openemail/rspamd:${OPENEMAIL_VERSION}
     container_name: rspamd
     stop_grace_period: 30s
     depends_on:
@@ -155,7 +139,7 @@ services:
           - rspamd
 
   php-fpm-openemail:
-    image: openemail/php-fpm:latest
+    image: openemail/php-fpm:${OPENEMAIL_VERSION}
     container_name: php-fpm
     command: "php-fpm -d date.timezone=${TZ} -d expose_php=0"
     depends_on:
@@ -202,7 +186,7 @@ services:
           - phpfpm
 
   sogo-openemail:
-    image: openemail/sogo:latest
+    image: openemail/sogo:${OPENEMAIL_VERSION}
     container_name: sogo
     hostname: sogo
     environment:
@@ -234,7 +218,7 @@ services:
           - sogo
 
   dovecot-openemail:
-    image: openemail/dovecot:latest
+    image: openemail/dovecot:${OPENEMAIL_VERSION} 
     container_name: dovecot
     cap_add:
       - NET_BIND_SERVICE
@@ -286,7 +270,7 @@ services:
           - dovecot
 
   postfix-openemail:
-    image: openemail/postfix:latest
+    image: openemail/postfix:${OPENEMAIL_VERSION}
     container_name: postfix
     hostname: postfix
     volumes:
@@ -333,7 +317,7 @@ services:
       - sogo-openemail
       - php-fpm-openemail
       - redis-openemail
-    image: openemail/nginx:latest
+    image: openemail/nginx
     container_name: nginx
     command: /bin/sh -c "envsubst < /etc/nginx/conf.d/templates/listen_plain.template > /etc/nginx/conf.d/listen_plain.active &&
       envsubst < /etc/nginx/conf.d/templates/listen_ssl.template > /etc/nginx/conf.d/listen_ssl.active &&
@@ -375,7 +359,7 @@ services:
   acme-openemail:
     depends_on:
       - nginx-openemail
-    image: openemail/acme:latest
+    image: openemail/acme:${OPENEMAIL_VERSION}
     container_name: acme
     dns:
       - ${IPV4_NETWORK:-172.22.1}.254
@@ -404,7 +388,7 @@ services:
           - acme
 
   netfilter-openemail:
-    image: openemail/netfilter:latest
+    image: openemail/netfilter:${OPENEMAIL_VERSION}
     container_name: netfilter
     stop_grace_period: 30s
     depends_on:
@@ -428,7 +412,7 @@ services:
       - /lib/modules:/lib/modules:ro
 
   watchdog-openemail:
-    image: openemail/watchdog:latest
+    image: openemail/watchdog:${OPENEMAIL_VERSION}
     container_name: watchdog
     volumes:
       - rspamd-vol-1:/var/lib/rspamd
@@ -459,7 +443,7 @@ services:
          - watchdog
 
   dockerapi-openemail:
-    image: openemail/dockerapi:latest
+    image: openemail/dockerapi:${OPENEMAIL_VERSION}
     restart: always
     container_name: dockerapi
     oom_kill_disable: true
@@ -474,7 +458,7 @@ services:
           - dockerapi
 
   solr-openemail:
-    image: openemail/solr:latest
+    image: openemail/solr:${OPENEMAIL_VERSION}
     container_name: solr
     restart: always
     volumes:
@@ -491,7 +475,7 @@ services:
           - solr
 
   olefy-openemail:
-    image: openemail/olefy:latest
+    image: openemail/olefy:${OPENEMAIL_VERSION}
     restart: always
     container_name: olefy
     environment:
@@ -526,7 +510,7 @@ services:
       - watchdog-openemail
       - dockerapi-openemail
       - solr-openemail
-    image: openemail/ipv6nat:latest
+    image: openemail/ipv6nat
     container_name: ipv6nat
     restart: always
     privileged: true
@@ -536,7 +520,7 @@ services:
       - /lib/modules:/lib/modules:ro
 
   backup-openemail:
-    image: openemail/backup:latest
+    image: openemail/backup
     container_name: backup
     hostname: backups
     environment:
